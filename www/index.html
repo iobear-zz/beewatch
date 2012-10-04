@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<title>beewatch 0.1b</title>
+</head>
+<link href="default.css" rel="stylesheet" type="text/css">
+<script src="jquery.min.js"></script>
+<script src="cookie.js"></script>
+<body>
+
+<br />
+<form name="input" action="index2.php" method="get">
+mac: <input type="text" value="001CA8A7BDB1" name="mac" />
+<select name="days">
+	<option value="1">1 day</option>
+	<option value="2">2 days</option>
+	<option value="3">3 days</option>
+	<option value="4">4 days</option>
+	<option value="5" SELECTED >5 days</option>
+	<option value="6">6 days</option>
+	<option value="7">7 days</option>
+	<option value="8">8 days</option>
+	<option value="9">9 days</option>
+	<option value="10">10 days</option>
+</select> 
+<input type="submit" value="Submit" />
+</form>
+
+<form name="input" action="index2.php" method="get">
+IP: <input type="text" name="ip" value="Not working"/>
+<input type="submit" value="Submit" />
+</form>
+<br /><br />Compare STB's<br />
+<form name="input" action="index2.php" method="get">
+<textarea cols="40" rows="5" name="macs">
+00:1C:A8-A7.BD9B
+001CA8A7BDB1
+</textarea><br />
+Days ago: <input type="text" name="daysago" size="2" value="0"/>
+<input type="submit" value="compare" />
+</form><br />
+<form name="input" action="index2.php" method="get">
+IPrange: <input type="text" name="ipstart" value="Not working"/>
+<input type="text" name="ipend" value="Not working"/>
+<input type="submit" value="Submit" />
+</form>
+<br />
+<br />Bookmarked boxes<br />
+<script>
+	var boXes=getCookie();
+	
+	for (var k in boXes) {
+		var boxAlias = unescape(boXes[k]);
+		var boxLink = ' <a href="index2.php?mac=' + k + '&days=5">' + k + '</a> ' + boxAlias;
+		document.write('<div id="' + k + '">');
+		document.write('<a href="javascript:void(0)" onclick="deleteCookie(\''+k+'\');">[x]</a>' + boxLink + '<br /></div>');
+	}
+</script>
+<br /><br />
+</body>
+</html>
