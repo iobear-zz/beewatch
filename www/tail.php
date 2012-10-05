@@ -16,17 +16,17 @@
     var lastByte = 0;
 
     if (typeof XMLHttpRequest == "undefined") {
-      // this is only for really ancient browsers
-      XMLHttpRequest = function () {
-        try { return new ActiveXObject("Msxml2.xmlHttp.6.0"); }
-        catch (e1) {}
-        try { return new ActiveXObject("Msxml2.xmlHttp.3.0"); }
-        catch (e2) {}
-        try { return new ActiveXObject("Msxml2.xmlHttp"); }
-        catch (e3) {}
-        throw new Error("This browser does not support xmlHttpRequest.");
-      };
-    }
+		// this is only for really ancient browsers
+		XMLHttpRequest = function () {
+			try { return new ActiveXObject("Msxml2.xmlHttp.6.0"); }
+			catch (e1) {}
+			try { return new ActiveXObject("Msxml2.xmlHttp.3.0"); }
+			catch (e2) {}
+			try { return new ActiveXObject("Msxml2.xmlHttp"); }
+			catch (e3) {}
+			throw new Error("This browser does not support xmlHttpRequest.");
+		};
+	}
 
 	function tailf() {
 		if (mac) {
@@ -37,41 +37,37 @@
 		if (lastByte == 0) {
 			// First request - get everything
 		} else {
-			//
 			// All subsequent requests - add the Range header
-			//
 			ajax.setRequestHeader("Range", "bytes=" + parseInt(lastByte) + "-");
 		}
 
-	ajax.onreadystatechange = function() {
-        if(ajax.readyState == 4) {
-
-		if (ajax.status == 200) {
-			// only the first request
-			lastByte = parseInt(ajax.getResponseHeader("Content-length"));
-			document.getElementById("thePlace").innerHTML = ajax.responseText;
-			document.getElementById("theEnd").scrollIntoView()
-		} else if (ajax.status == 206) {
-			lastByte += parseInt(ajax.getResponseHeader("Content-length"));
-			document.getElementById("thePlace").innerHTML += ajax.responseText;
-			document.getElementById("theEnd").scrollIntoView()
-		} else if (ajax.status == 416) {
-			// no new data, so do nothing
-		} else {
-			//  Some error occurred - just display the status code and response
-			alert("Ajax status: " + ajax.status + "\n" + ajax.getAllResponseHeaders());
-          }
-        }
-      }
-      ajax.send(null);
+		ajax.onreadystatechange = function() {
+			if(ajax.readyState == 4) {
+				if (ajax.status == 200) {
+					// only the first request
+					lastByte = parseInt(ajax.getResponseHeader("Content-length"));
+					document.getElementById("thePlace").innerHTML = ajax.responseText;
+					document.getElementById("theEnd").scrollIntoView()
+				} else if (ajax.status == 206) {
+					lastByte += parseInt(ajax.getResponseHeader("Content-length"));
+					document.getElementById("thePlace").innerHTML += ajax.responseText;
+					document.getElementById("theEnd").scrollIntoView()
+				} else if (ajax.status == 416) {
+					// no new data, so do nothing
+				} else {
+					//  Some error occurred - just display the status code and response
+					alert("Ajax status: " + ajax.status + "\n" + ajax.getAllResponseHeaders());
+				}
+			}
+		}
+		ajax.send(null);
     }
 
-var myTimer;
+	var myTimer;
 	function stopLog(val) {
 		window.clearInterval(val);
-		$('#button').hide();
+		$('#stopButton').hide();
 	}
-
 
 </script>
 </head>
@@ -79,7 +75,7 @@ var myTimer;
 <div>
 	<pre id="thePlace"></pre>
 <div id="theEnd"></div>
- <div id="button"><button onclick='stopLog(myTimer)'>Stop</button></div>
+ <div id="stopButton"><button onclick='stopLog(myTimer)'>Stop</button></div>
 </div>
 </body>
 </html>
