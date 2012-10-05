@@ -1,21 +1,14 @@
 <?php
 $unixTime = $_REQUEST['unixTime'];
 $mac = $_REQUEST['mac'];
-$logs = $_REQUEST['logs'];
 $days = $_REQUEST['days'];
 $offset = $_REQUEST['offset'];
-$tail = $_REQUEST['tail'];
 
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Wed, 2 Apr 1975 15:00:00 GMT');
 header('Content-type: application/json');
 header('Charset: UTF-8');
 
-//if ($unixTime) {
-//$unixTime = (intval($unixTime)+120)/300*300;
-//$unixTime = ($unixTime+120)/300*300;
-//round to strict 5 min interval
-//}
 
 require "predis/autoload.php";
 Predis\Autoloader::register();
@@ -43,15 +36,11 @@ if ($unixTime) {
 	$startTime = $unixTime;
 } else {
 	$amoutOfLoops = 86400 * ($days + 1) / 300;
-	if ($offset) {
-		$startTime = mktime(0, 0, 0, date('n'), date('j') - $days-$offset);
-	} else {
-		$startTime = mktime(0, 0, 0, date('n'), date('j') - $days-$offset);
-	}
+	$startTime = mktime(0, 0, 0, date('n'), date('j') - $days-$offset);
 }
 
 $i = 0;
-if ($logs == 1) { //dispay raw logs
+if ($_REQUEST['logs'] == 1) { //dispay raw logs
 	$amoutOfLoops = 2;
 	$startTime = $startTime - 300;
 		while($i<=$amoutOfLoops) {
@@ -66,7 +55,7 @@ if ($logs == 1) { //dispay raw logs
 		$i++;
 		$startTime = $startTime + 300;
 	}
-} elseif ($tail== 1) {	//tail logs
+} elseif ($_REQUEST['tail'] == 1) {	//tail logs
 	$startTime = mktime(date(H),date(i),0,date(n),date(d),date(Y)); //sec = 00
 	$startTime = round(($startTime+120)/300)*300; // force 5 min timeslot
 	$startTime = $startTime - 300;
