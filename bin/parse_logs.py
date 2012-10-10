@@ -27,8 +27,10 @@ def matchmyregex(line):
 			firmware = REGEXip.findall(line)
 			if len(firmware) > 2:
 				ipAton = reduce(lambda x,y: (x<<8) + y, [ int(x) for x in firmware[2].split('.') ])
-				r_server.zadd(macNoDelimt, firmware[2], ipAton)
-				r_server.expire(macNoDelimt, 432000)
+#				r_server.zadd(macNoDelimt, firmware[2], ipAton)
+#				r_server.expire(macNoDelimt, 432000)
+				r_server.set(ipAton, macNoDelimt)
+				r_server.expire(ipAton, 432000)
 				r_server.zadd(dateMac, "fw:" + firmware[1], datetimeUnix)
 				r_server.zadd(dateMac, "ip:" + firmware[2], datetimeUnix)
 				r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
@@ -50,7 +52,7 @@ def matchmyregex(line):
 		elif REGM_playing.search(line):
 			if REGEXplayurl.search(line):
 				playurl = REGEXplayurl.findall(line)
-				r_server.zadd(dateMac, "url:" + playurl[0], datetimeUnix)				
+				r_server.zadd(dateMac, "url:" + playurl[0].split('/')[2], datetimeUnix)				
 			elif REGEXip.search(line):
 				playurl = REGEXip.findall(line)
 				r_server.zadd(dateMac, "url:" + playurl[1], datetimeUnix)

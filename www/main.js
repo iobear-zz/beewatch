@@ -1,8 +1,8 @@
 var daysago = 0;
-
 var urls = {};
 var macs = [];
 macsToDisplay = [];
+
 var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key2,value2) {
 	if (key2 == "daysago") {
 		daysago = value2;
@@ -20,8 +20,8 @@ var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,k
 if (macsToDisplay) {
 	for (var i = 0; i < macsToDisplay.length; i++) {
 		macII = macsToDisplay[i];
-		calcDisplay('days',1,macII,daysago);
-		pullRedis('',macII,1,daysago);
+		calcDisplay('days', 1, macII, daysago);
+		pullRedis(getRedisUrl('', macII, 1, daysago), 'days');
 	}
 }
 
@@ -29,14 +29,18 @@ function urldecode(url) {
   return decodeURIComponent(url.replace(/\+/g, ' '));
 }
 
-var data;
-
-function pullRedis(unixTime, macII, days, offset) {
+function getRedisUrl(unixTime, macII, days, offset) {
+	var url;
 	if (days) {
-		url = "http://beewatch01.lx.tv.sk.waoo.org/readjson.php?days=" + days + "&mac=" + macII+"&offset="+offset
+		url = jsonUrl + "?json=1&days=" + days + "&mac=" + macII+"&offset="+offset;
 	} else {
-		url = "http://beewatch01.lx.tv.sk.waoo.org/readjson.php?unixTime=" + unixTime + "&mac=" + macII
+		url = jsonUrl + "?json=1&unixTime=" + unixTime + "&mac=" + macII;
 	}
+	return url;
+}
+
+var data;
+function pullRedis(url, timeStr) {
 	$.ajax({
 		url: url,
 		cache: "true",
@@ -44,9 +48,9 @@ function pullRedis(unixTime, macII, days, offset) {
 		dataType: "json",
 		success: function(source){
 			data = source;
-			if (days) {
+			if (timeStr == "days") {
 				showInfo();
-			} else {
+			} else if (timeStr == "min") {
 				showDetails();
 			} 
 		},

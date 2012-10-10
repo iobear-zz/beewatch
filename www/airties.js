@@ -1,17 +1,15 @@
-//2011 - 2012 BNJ 
+//Display 24hour status bar, for AirTies
 
 var macIII = 0;
-
-function genGreyBar(startsec,macII) {
-	var i = startsec; //unix startime
-	var f = i + 86100; //length of the bar = ~24h
-	while ( i <= f) {
-		document.write('<div id='+ i + '_' + macII + ' title="no info" class="st"></div>');
-		i = i + 300; //5min jump
+function genGreyBar(startsec, macII) {
+	var f = startsec + 86100; //length of the bar = ~24h
+	while (startsec <= f) {
+		document.write('<div id='+ startsec + '_' + macII + ' title="no info" class="st"></div>');
+		startsec = startsec + 300; //5min jump
 	}
 }
 
-function calcDisplay(mode,uxdate,macII) {
+function calcDisplay(mode, uxdate, macII) {
 	var monthNames = [ "Jan", "Feb", "Mar", "Apr", "Maj", "Juni", "July", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 	var now = new Date();
 	var date = now.getDate();
@@ -41,6 +39,7 @@ function showInfo(){
 	var lasttime = 0;
 	var uptime = 0;
 	var lastErr = 0;
+	var JSONvalue = 0;
 	var stbErr = new Array();
 	var errorList = new Array();
 	errorList = ['badStream', 'ddecodeDrops','decodeErr', 'decodeOflow', 'displayDrops','displayErr','displayOflow','iframeErr','ptsDrops','ptsOflow','stalled'];

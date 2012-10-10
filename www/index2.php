@@ -1,11 +1,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
-<title>beewatch 0.1b</title>
+<title>Beewatch</title>
 <script src="jquery.min.js"></script>
+<script src="settings.js"></script>
 <script src="cookie.js"></script>
 <script src="airties.js"></script>
 <script src="main.js"></script>
+<script src="utils.js"></script>
 <script src="channels.js"></script>
 
 <?php
@@ -37,7 +39,7 @@ if ($mac) {
 <script>
 if (mac) {
 	calcDisplay('days',days,mac,daysago);
-	pullRedis('',mac,days,0);
+	pullRedis(getRedisUrl('',mac,days,0), 'days');
 }
 </script>
 <script src="mouseOver.js"></script>

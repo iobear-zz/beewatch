@@ -1,11 +1,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
-<title>beewatch 0.1b</title>
+<title>Beewatch</title>
 </head>
 <link href="default.css" rel="stylesheet" type="text/css">
 <script src="jquery.min.js"></script>
+<script src="settings.js"></script>
 <script src="cookie.js"></script>
+<script src="utils.js"></script>
 <body>
 
 <br />
@@ -26,11 +28,10 @@ mac: <input type="text" value="001CA8A7BDB1" name="mac" />
 <input type="submit" value="Submit" />
 </form>
 
-<form name="input" action="index2.php" method="get">
-IP: <input type="text" name="ip" value="Not working"/>
-<input type="submit" value="Submit" />
-</form>
-<br /><br />Compare STB's<br />
+IP: <input id="ipadr" id="name" type="text" onchange="checkIP()" value="10.24.1.18"/><button id="id" onclick="goToBars()">Submit</button>
+<div class="ipHTML"></div>
+
+<br />Compare STB's<br />
 <form name="input" action="index2.php" method="get">
 <textarea cols="40" rows="5" name="macs">
 00:1C:A8-A7.BD9B
@@ -55,7 +56,21 @@ IPrange: <input type="text" name="ipstart" value="Not working"/>
 		document.write('<div id="' + k + '">');
 		document.write('<a href="javascript:void(0)" onclick="deleteCookie(\''+k+'\');">[x]</a>' + boxLink + '<br /></div>');
 	}
-</script>
+
+	function checkIP() {
+		var ipadr = $("#ipadr").val();
+		mac = resolveIP(ip2long(ipadr));
+		if (!(mac)) {
+			$(".ipHTML").html('mac: not found');
+		}
+	}
+	
+	function goToBars() {
+		if (mac) {
+			window.location.href = 'index2.php?days=5&mac=' + mac;
+		}
+	}
+	</script>
 <br /><br />
 </body>
 </html>

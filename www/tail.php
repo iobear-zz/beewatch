@@ -12,6 +12,7 @@
  echo "</script>";
 ?>
 <script src="jquery.min.js"></script>
+<script src="settings.js"></script>
 <script type="text/javascript"> 
     var lastByte = 0;
 
@@ -30,7 +31,7 @@
 
 	function tailf() {
 		if (mac) {
-			var url = 'http://beewatch01.lx.tv.sk.waoo.org/readjson.php?mac=' + mac + '&tail=1';
+			var url = jsonUrl + '?mac=' + mac + '&tail=1';
 			var ajax = new XMLHttpRequest();
 			ajax.open("POST",url,true);
 		}

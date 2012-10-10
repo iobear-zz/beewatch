@@ -1,4 +1,4 @@
-//2011 - 2012 BNJ 
+//Mouse related functions
 
 document.write( '<br /><br /><div class="kasse">');
 document.write( '<div id="macAddr" class="headline">MAC </div>' );
@@ -34,54 +34,17 @@ document.write( '</div>');
 		var timeMac = $(this).attr('id').split("_",2);
 		document.getElementById("tstamp").innerHTML = "time "+timeConverter(timeMac[0]);
 		document.getElementById("macAddr").innerHTML = "mac "+timeMac[1];
-		pullRedis(timeMac[0], timeMac[1]);
+		pullRedis(getRedisUrl(timeMac[0], timeMac[1]), 'min');
 	});
 	$("div.st").mousedown(function(event){
 		if (event.which == 1){ //left click
 			var timeMac = $(this).attr('id').split("_",2);
-			//var win = window.open ("http://beewatch01.lx.tv.sk.waoo.org/readjson.php?unixTime="+$(this).attr('id')+"&logs=1");
-			var win = window.location = "http://beewatch01.lx.tv.sk.waoo.org/readjson.php?unixTime="+timeMac[0]+'&mac='+timeMac[1]+"&logs=1";
+			var win = window.location = jsonUrl + "?unixTime="+timeMac[0]+'&mac='+timeMac[1]+"&logs=1";
 			win.focus();
 		}
-		//console.log(event);
 	});
-	$('#element').mousedown(function(event) {
-	switch (event.which) {
-		case 1:
-			alert('Left mouse button pressed');
-			break;
-		case 2:
-			alert('Middle mouse button pressed');
-			break;
-		case 3:
-			alert('Right mouse button pressed');
-			break;
-		default:
-			alert('You have a strange mouse');
-	}
-});
 });
 
-function timeConverter(UNIX_timestamp){
-	var a = new Date(UNIX_timestamp*1000);
-	var hour = a.getHours();
-	var min = a.getMinutes();
-	var time = hour+':'+min;
-	return time;
-}
-
-function formatUptime (a){
-	if (a.length > 4) {
-		a = a.slice(0, -4);
-		if (a == 1) {
-			return a + ' day';
-		} else {
-			return a + ' days';
-		}
-	} else {
-		return a;
-	}
-}
 
 function showDetails(){
 	var lasttime = 0;
