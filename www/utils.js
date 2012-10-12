@@ -21,10 +21,14 @@ function formatUptime(a){
 	}
 }
 
-function resolveIP(ip) {
-	var orderUrl = jsonUrl + "?ip="+ip;
+function resolveIP(ipstart, ipend) {
+	if (ipend) {
+		var ipUrl = jsonUrl + "?ipstart=" + ipstart + "&ipend=" + ipend;
+	} else {
+		var ipUrl = jsonUrl + "?ipstart=" + ipstart;
+	}
 	$.ajax({ type: "POST",   
-		url: orderUrl,
+		url: ipUrl,
 	    dataType: "html",
 		async: false,
 		success : function(text) {

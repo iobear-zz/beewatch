@@ -28,7 +28,7 @@ mac: <input type="text" value="001CA8A7BDB1" name="mac" />
 <input type="submit" value="Submit" />
 </form>
 
-IP: <input id="ipadr" id="name" type="text" onchange="checkIP()" value="10.24.1.18"/><button id="id" onclick="goToBars()">Submit</button>
+IP: <input id="ipadr" id="name" type="text" value="10.24.1.18"/><button id="id" onclick="goToBars()">Submit</button>
 <div class="ipHTML"></div>
 
 <br />Compare STB's<br />
@@ -40,16 +40,14 @@ IP: <input id="ipadr" id="name" type="text" onchange="checkIP()" value="10.24.1.
 Days ago: <input type="text" name="daysago" size="2" value="0"/>
 <input type="submit" value="compare" />
 </form><br />
-<form name="input" action="index2.php" method="get">
-IPrange: <input type="text" name="ipstart" value="Not working"/>
-<input type="text" name="ipend" value="Not working"/>
-<input type="submit" value="Submit" />
-</form>
+IPrange: <input id="ipstart" id="name" type="text" value="10.24.1.1"/>
+<input id="ipend" id="name" type="text" value="10.24.1.254"/>
+<button id="id" onclick="goToBars('range')">Submit</button>
+<div class="ipRangeHTML"></div>
 <br />
 <br />Bookmarked boxes<br />
 <script>
 	var boXes=getCookie();
-	
 	for (var k in boXes) {
 		var boxAlias = unescape(boXes[k]);
 		var boxLink = ' <a href="index2.php?mac=' + k + '&days=5">' + k + '</a> ' + boxAlias;
@@ -57,20 +55,29 @@ IPrange: <input type="text" name="ipstart" value="Not working"/>
 		document.write('<a href="javascript:void(0)" onclick="deleteCookie(\''+k+'\');">[x]</a>' + boxLink + '<br /></div>');
 	}
 
-	function checkIP() {
-		var ipadr = $("#ipadr").val();
-		mac = resolveIP(ip2long(ipadr));
-		if (!(mac)) {
-			$(".ipHTML").html('mac: not found');
+	function goToBars(task) {
+		if (task == "range") {
+			var ipStart = $("#ipstart").val();
+			var ipStart = ip2long(ipStart);
+			var ipEnd = $("#ipend").val();
+			var ipEnd = ip2long(ipEnd);
+			var macs = resolveIP(ipStart, ipEnd);
+			if (macs) {
+				window.location.href = 'index2.php?daysago=0&macs=' + macs;
+			} else {
+				$(".ipRangeHTML").html('IP: no active box found');
+			}
+		} else {
+			var ipadr = $("#ipadr").val();
+			mac = resolveIP(ip2long(ipadr));
+			if (mac) {
+				window.location.href = 'index2.php?days=5&mac=' + mac;
+			} else {
+				$(".ipHTML").html('mac: not found');
+			}
 		}
 	}
-	
-	function goToBars() {
-		if (mac) {
-			window.location.href = 'index2.php?days=5&mac=' + mac;
-		}
-	}
-	</script>
+</script>
 <br /><br />
 </body>
 </html>

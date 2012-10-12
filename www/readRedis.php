@@ -86,8 +86,19 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 		$startTime = $startTime + 300;
 	}
 	echo "]";
-} elseif ($_REQUEST['ip']) {
-	echo $redis->get($_REQUEST['ip']);
+} elseif ($_REQUEST['ipstart']) {
+	if ($_REQUEST['ipend']) {
+		$ipstart = $_REQUEST['ipstart'];
+		$ipend = $_REQUEST['ipend'];
+		if (is_numeric($ipend) && is_numeric($ipstart) && ($ipstart < $ipend)) {
+			while ($ipend >= $ipstart) {
+				echo $redis->get($ipstart);
+				$ipstart++;
+			}
+		}
+	} else {
+		echo $redis->get($_REQUEST['ipstart']);
+	}
 }
 
 ?>
