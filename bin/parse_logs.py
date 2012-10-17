@@ -55,7 +55,10 @@ def matchmyregex(line):
 				r_server.zadd(dateMac, "url:" + playurl[0].split('/')[2], datetimeUnix)				
 			elif REGEXip.search(line):
 				playurl = REGEXip.findall(line)
-				r_server.zadd(dateMac, "url:" + playurl[1], datetimeUnix)
+				if (len(playurl) > 1):
+					r_server.zadd(dateMac, "url:" + playurl[1], datetimeUnix)
+				else:
+					r_server.zadd(dateMac, "url:unknown", datetimeUnix)				
 			else:
 				playurl = REGEXplayurl.findall(line)
 				r_server.zadd(dateMac, "fw:" + playurl[0], datetimeUnix)
