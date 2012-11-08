@@ -86,7 +86,7 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 		$startTime = $startTime + 300;
 	}
 	echo "]";
-} elseif ($_REQUEST['ipstart']) {
+} elseif ($_REQUEST['ipstart']) { //get active boxes in IP-range
 	if ($_REQUEST['ipend']) {
 		$ipstart = $_REQUEST['ipstart'];
 		$ipend = $_REQUEST['ipend'];
