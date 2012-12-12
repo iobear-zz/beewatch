@@ -85,19 +85,19 @@ def matchmyregex(line):
 			r_server.zadd(dateMac, "decodeErr:" + dErrErrors[1:-1], datetimeUnix)
 		elif REGM_display.search(line):
 			displayErr = REGEXdecodeerr.findall(line)
-			displayOflow = displayErr[1].split();
+			displayUflow = displayErr[1].split();
 			displayDrops = displayErr[2].split();
 			displayErrII = REGEXdecodeerrII.findall(line)
 			displayErrors = displayErrII[0]
-			r_server.zadd(dateMac, "displayOflow:" + displayOflow[1], datetimeUnix)
+			r_server.zadd(dateMac, "displayUflow:" + displayUflow[1], datetimeUnix)
 			r_server.zadd(dateMac, "displayDrops:" + displayDrops[1], datetimeUnix)
 			r_server.zadd(dateMac, "displayErr:" + displayErrors[1:-1], datetimeUnix)
 		elif REGM_pts.search(line):
 			ptsErr = REGEXdecodeerr.findall(line)
-			ptsOflow = ptsErr[1].split()
-			ptsDrops = ptsErr[2].split()
-			r_server.zadd(dateMac, "ptsOflow:" + ptsOflow[1], datetimeUnix)
-			r_server.zadd(dateMac, "ptsDrops:" + ptsDrops[1], datetimeUnix)
+			ptsError = ptsErr[1].split()
+			Discontinuity = ptsErr[2].split()
+			r_server.zadd(dateMac, "ptsError:" + ptsError[1], datetimeUnix)
+			r_server.zadd(dateMac, "Discontinuity:" + Discontinuity[1], datetimeUnix)
 		elif REGM_stalled.search(line):
 			stalledErr = REGEXdecodeerr.findall(line)
 			stalled = stalledErr[1].split()

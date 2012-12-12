@@ -58,13 +58,13 @@ if (mac) {
 </div>
 <div class="kasse">
 	<div class="headline">Display</div>
+	<div class="displayUflow"></div>
 	<div class="displayDrops"></div>
 	<div class="displayErr"></div>
-	<div class="displayOflow"></div>
 </div>
 <div class="kasse">
 	<div class="headline">Misc</div>
-	<div class="ptsDrops"></div>
+	<div class="ptsError"></div>
 	<div class="Discontinuity"></div>
 	<div class="iframeErr"></div>
 </div>
