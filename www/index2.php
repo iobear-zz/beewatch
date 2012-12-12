@@ -20,7 +20,7 @@ echo "<script>";
 echo "mac='".$mac."';";
 echo "days='".$days."';";
 ?>
-tailLink ='http://beewatch01.lx.tv.sk.waoo.org/tail.php?mac=' + mac;
+var tailLink ='http://' + window.location.hostname + '/tail.php?mac=' + mac;
 function goToTail() {
 	window.location = tailLink;
 }
