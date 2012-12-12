@@ -11,6 +11,7 @@ function returnChannel(chan) {
 	ch['88.83.68.54'] = 'Edgeware2 RTSP';
 	ch['233.138.48.187'] = 'TV2 News';
 	ch['233.138.48.198'] = 'RTL HD';
+	ch['233.138.48.130'] = 'Disney Channel DK';
 	
 	for (var k in ch) {
 	    if (chan == k) {

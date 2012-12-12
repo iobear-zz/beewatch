@@ -44,8 +44,39 @@ if (mac) {
 </script>
 <script src="mouseOver.js"></script>
 <br /><br />
+<div class="kasse">
+	<div id="macAddr" class="headline">MAC </div>
+	<div class="url"></div>
+	<div class="tstamp"></div>
+	<div class="upt"></div>
+</div>
+<div class="kasse">
+	<div class="headline">Decoder</div>
+	<div class="ddecodeDrops"></div>
+	<div class="decodeErr"></div>
+	<div class="decodeOflow"></div>
+</div>
+<div class="kasse">
+	<div class="headline">Display</div>
+	<div class="displayDrops"></div>
+	<div class="displayErr"></div>
+	<div class="displayOflow"></div>
+</div>
+<div class="kasse">
+	<div class="headline">Misc</div>
+	<div class="ptsDrops"></div>
+	<div class="Discontinuity"></div>
+	<div class="iframeErr"></div>
+</div>
+<div class="kassesidst">
+	<div class="headline">Misc</div>
+	<div class="stalled"></div>
+	<div class="badStream"></div>
+	<div class="operaCrash"></div>
+</div>
+</script>
+<br /><br />
 
 <div id="data"></div>
-<br /><br />
 </body>
 </html>
