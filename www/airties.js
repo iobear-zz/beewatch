@@ -42,7 +42,7 @@ function showInfo(){
 	var JSONvalue = 0;
 	var stbErr = new Array();
 	var errorList = new Array();
-	errorList = ['badStream', 'ddecodeDrops','decodeErr', 'decodeOflow', 'displayDrops','displayErr','displayOflow','iframeErr','ptsDrops','ptsOflow','stalled'];
+	errorList = ['badStream', 'ddecodeDrops','decodeErr', 'decodeOflow', 'displayDrops','displayErr','displayUflow','iframeErr','ptsError','Discontinuity','stalled'];
 	$.each(data, function(index, JSONvalue) {
 		var error5min = 0;
 		var missingMcast = 0;
