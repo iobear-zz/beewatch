@@ -49,6 +49,7 @@ if (mac) {
 	<div class="url"></div>
 	<div class="tstamp"></div>
 	<div class="upt"></div>
+	<div class="uptSec"></div>
 </div>
 <div class="kasse">
 	<div class="headline">Decoder</div>

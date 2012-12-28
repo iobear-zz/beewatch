@@ -21,6 +21,21 @@ function formatUptime(a){
 	}
 }
 
+function secondsToTime(secs) { // from http://codeaid.net/javascript/convert-seconds-to-hours-minutes-and-seconds-%28javascript%29
+	var hours = Math.floor(secs / (60 * 60));
+	var divisor_for_minutes = secs % (60 * 60);
+	var minutes = Math.floor(divisor_for_minutes / 60);
+	var divisor_for_seconds = divisor_for_minutes % 60;
+	var seconds = Math.ceil(divisor_for_seconds);
+	var days = Math.floor(hours / 24);
+
+	if (days) {
+		return days + ' days'
+	} else {
+		return hours + 'H' + minutes;
+	}
+}
+
 function resolveIP(ipstart, ipend) {
 	if (ipend) {
 		var ipUrl = jsonUrl + "?ipstart=" + ipstart + "&ipend=" + ipend;

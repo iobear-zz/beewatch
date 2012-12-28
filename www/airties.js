@@ -73,14 +73,17 @@ function showInfo(){
 		var tstamp = parseInt(data[index]['stime']) + '_' + macIII;
 		//var lstamp = data[index]['ltime'];
 		mcast = data[index]['url'];
-		upt = parseInt(data[index]['upt']);
+		upt = parseInt(data[index]['uptSec']);
+		if (!(upt)) {
+			upt = parseInt(data[index]['upt']);
+		}
 		ip = data[index]['ip'];
 		fw = data[index]['fw'];
 		if (tstamp && document.getElementById(tstamp)) {
 			if (rtsperr) {
 				document.getElementById(tstamp).title = rtsperr;
 				document.getElementById(tstamp).style.backgroundColor = "red";
-			} else if (upt >= lasttime ) {
+			} else if (upt >= lasttime) {
 				if (missingMcast) {
 					document.getElementById(tstamp).title = 'no multicast';
 					document.getElementById(tstamp).style.backgroundColor = "red";

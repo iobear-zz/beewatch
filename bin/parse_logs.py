@@ -49,6 +49,12 @@ def matchmyregex(line):
 			upt = uptTMP[0].split()[1].replace(':', "") #remove "up", space & :
 			upt = str(int(upt) * minDag)
 			r_server.zadd(dateMac, "upt:" + upt, datetimeUnix)
+		elif REGM_uptime_sec.findall(line):
+			uptTMP = REGEXupSec.findall(line)
+			if uptTMP:
+				upt = REGEXupSecDetail.findall(uptTMP[0])[0]
+				r_server.zadd(dateMac, "uptSec:" + upt, datetimeUnix)
+				print line
 		elif REGM_playing.search(line):
 			if REGEXplayurl.search(line):
 				playurl = REGEXplayurl.findall(line)
@@ -148,10 +154,13 @@ REGM_pts = re.compile(r"Pts ")
 REGM_stalled = re.compile(r"Stalled")
 REGM_memory = re.compile(r"Memory")
 REGM_uptime = re.compile(r"average")
+REGM_uptime_sec = re.compile(r"log_uptime")
 REGM_mcast = re.compile(r"mcast")
 REGM_invalid = re.compile(r"invalid data received")
-#extract this
 
+#extract this
+REGEXupSec = re.compile(r"(S : \d+.\d+)")
+REGEXupSecDetail = re.compile(r"(\d+)")
 REGEXupMin = re.compile(r"(up \d+)")
 REGEXupHourMin = re.compile(r"(up +\d+:\d+)")
 REGEXupDays = re.compile(r"(up \d+ day)")
