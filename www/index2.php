@@ -53,28 +53,29 @@ if (mac) {
 	<div class="fw"></div>
 </div>
 <div class="kasse">
+	<div class="headline">Misc</div>
+	<div class="ptsError"></div>
+	<div class="Discontinuity"></div>
+	<div class="iframeErr"></div>
+	<div class="ip"></div>
+</div>
+<div class="kasse">
+	<div class="headline">Misc</div>
+	<div class="stalled"></div>
+	<div class="badStream"></div>
+	<div class="operaCrash"></div>
+</div>
+<div class="kasse">
 	<div class="headline">Decoder</div>
 	<div class="ddecodeDrops"></div>
 	<div class="decodeErr"></div>
 	<div class="decodeOflow"></div>
 </div>
-<div class="kasse">
+<div class="kassesidst">
 	<div class="headline">Display</div>
 	<div class="displayUflow"></div>
 	<div class="displayDrops"></div>
 	<div class="displayErr"></div>
-</div>
-<div class="kasse">
-	<div class="headline">Misc</div>
-	<div class="ptsError"></div>
-	<div class="Discontinuity"></div>
-	<div class="iframeErr"></div>
-</div>
-<div class="kassesidst">
-	<div class="headline">Misc</div>
-	<div class="stalled"></div>
-	<div class="badStream"></div>
-	<div class="operaCrash"></div>
 </div>
 </script>
 <br /><br />
