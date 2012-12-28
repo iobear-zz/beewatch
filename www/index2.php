@@ -50,6 +50,7 @@ if (mac) {
 	<div class="tstamp"></div>
 	<div class="upt"></div>
 	<div class="uptSec"></div>
+	<div class="fw"></div>
 </div>
 <div class="kasse">
 	<div class="headline">Decoder</div>
