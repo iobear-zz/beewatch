@@ -13,135 +13,138 @@ def matchmyregex(line):
 		#generate uniq key to combine multiple loglines from same STB (mac + datetime)
 		macaddr = REGEXmac.findall(line)
 		datetimeTmp = REGEXdatetime.findall(line)
-		macNoDelimtTMP = macaddr[0].replace(':', "")
-		macNoDelimt = macNoDelimtTMP.replace(" ", "")
+		if  macaddr:
+			macNoDelimtTMP = macaddr[0].replace(':', "")
+			macNoDelimt = macNoDelimtTMP.replace(" ", "")
 	
-		datetimeUnixTmp = datetime.strptime(datetimeTmp[0] , "%Y-%m-%d %H:%M:%S").strftime('%s')
-		datetimeUnix = str((int(datetimeUnixTmp)+120)/300*300) #round to strict 5 min interval
-		dateMac = datetimeUnix + macNoDelimt
-		r_server.zadd(dateMac, "stime:" + datetimeUnix, datetimeUnix)
-		dateMacLog = 'log' + datetimeUnix + macNoDelimt
-		r_server.zadd(dateMacLog, line, datetimeUnix)
-		r_server.expire(dateMacLog, 864000)
-		if REGM_ipaddress.search(line):
-			firmware = REGEXip.findall(line)
-			if len(firmware) > 2:
-				ipAton = reduce(lambda x,y: (x<<8) + y, [ int(x) for x in firmware[2].split('.') ])
-				r_server.zadd(macNoDelimt, firmware[2], ipAton)
-				r_server.expire(macNoDelimt, 432000)
-				r_server.set(ipAton, macNoDelimt)
-				r_server.expire(ipAton, 432000)
-				r_server.zadd(dateMac, "fw:" + firmware[1], datetimeUnix)
-				r_server.zadd(dateMac, "ip:" + firmware[2], datetimeUnix)
-				r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
-			else:
-				r_server.zadd(dateMac, "ip:" + firmware[1], datetimeUnix)
-				r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)				
-		elif REGM_uptime.search(line):
-			uptTMP = REGEXupDays.findall(line)
-			minDag = 1
-			if (uptTMP):
-				minDag = 10000
-			if not (uptTMP):
-				uptTMP = REGEXupHourMin.findall(line)
-			if not (uptTMP):
-				uptTMP = REGEXupMin.findall(line)
-			upt = uptTMP[0].split()[1].replace(':', "") #remove "up", space & :
-			upt = str(int(upt) * minDag)
-			r_server.zadd(dateMac, "upt:" + upt, datetimeUnix)
-		elif REGM_uptime_sec.findall(line):
-			uptTMP = REGEXupSec.findall(line)
-			if uptTMP:
-				upt = REGEXupSecDetail.findall(uptTMP[0])[0]
-				r_server.zadd(dateMac, "uptSec:" + upt, datetimeUnix)
-		elif REGM_playing.search(line):
-			if REGEXplayurl.search(line):
-				playurl = REGEXplayurl.findall(line)
-				r_server.zadd(dateMac, "url:" + playurl[0].split('/')[2], datetimeUnix)				
-			elif REGEXip.search(line):
-				playurl = REGEXip.findall(line)
-				if (len(playurl) > 1):
-					r_server.zadd(dateMac, "url:" + playurl[1], datetimeUnix)
+			datetimeUnixTmp = datetime.strptime(datetimeTmp[0] , "%Y-%m-%d %H:%M:%S").strftime('%s')
+			datetimeUnix = str((int(datetimeUnixTmp)+120)/300*300) #round to strict 5 min interval
+			dateMac = datetimeUnix + macNoDelimt
+			r_server.zadd(dateMac, "stime:" + datetimeUnix, datetimeUnix)
+			dateMacLog = 'log' + datetimeUnix + macNoDelimt
+			r_server.zadd(dateMacLog, line, datetimeUnix)
+			r_server.expire(dateMacLog, 864000)
+			if REGM_ipaddress.search(line):
+				firmware = REGEXip.findall(line)
+				if len(firmware) > 2:
+					ipAton = reduce(lambda x,y: (x<<8) + y, [ int(x) for x in firmware[2].split('.') ])
+					r_server.zadd(macNoDelimt, firmware[2], ipAton)
+					r_server.expire(macNoDelimt, 432000)
+					r_server.set(ipAton, macNoDelimt)
+					r_server.expire(ipAton, 432000)
+					r_server.zadd(dateMac, "fw:" + firmware[1], datetimeUnix)
+					r_server.zadd(dateMac, "ip:" + firmware[2], datetimeUnix)
+					r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
 				else:
-					r_server.zadd(dateMac, "url:unknown", datetimeUnix)				
-			else:
-				playurl = REGEXplayurl.findall(line)
-				r_server.zadd(dateMac, "fw:" + playurl[0], datetimeUnix)
-#		elif REGM_memory.search(line):
-#			memory = REGEXmem.findall(line)
-#			memTotal = memory[0].split() #Total Mem
-#			memFree = memory[1].split() #Free Memory
-#			kernelCached = memory[2].split() #Kernel Cached
-#			kernelFree = memory[3].split() #Kernel free
-#			r_server.zadd(dateMac, "memTotal:" + memTotal[0], datetimeUnix)
-#			r_server.zadd(dateMac, "memFree:" + memFree[0], datetimeUnix)
-#			r_server.zadd(dateMac, "kernelFree:" + kernelFree[0], datetimeUnix)
-#			r_server.zadd(dateMac, "kernelCached:" + kernelCached[0], datetimeUnix)
-		elif REGM_decodeErr.search(line):
-			dErr = REGEXdecodeerr.findall(line)
-			dErrOflow = dErr[1].split()
-			dErrDrops = dErr[2].split()
-			operacrash = dErr[3].split();
-			dErrII = REGEXdecodeerrII.findall(line)
-			dErrErrors = dErrII[0]
-			r_server.zadd(dateMac, "operaCrash:" + operacrash[1], datetimeUnix)
-			r_server.zadd(dateMac, "decodeOflow:" + dErrOflow[1], datetimeUnix)
-			r_server.zadd(dateMac, "ddecodeDrops:" + dErrDrops[1], datetimeUnix)
-			r_server.zadd(dateMac, "decodeErr:" + dErrErrors[1:-1], datetimeUnix)
-		elif REGM_display.search(line):
-			displayErr = REGEXdecodeerr.findall(line)
-			displayUflow = displayErr[1].split();
-			displayDrops = displayErr[2].split();
-			displayErrII = REGEXdecodeerrII.findall(line)
-			displayErrors = displayErrII[0]
-			r_server.zadd(dateMac, "displayUflow:" + displayUflow[1], datetimeUnix)
-			r_server.zadd(dateMac, "displayDrops:" + displayDrops[1], datetimeUnix)
-			r_server.zadd(dateMac, "displayErr:" + displayErrors[1:-1], datetimeUnix)
-		elif REGM_pts.search(line):
-			ptsErr = REGEXdecodeerr.findall(line)
-			ptsError = ptsErr[1].split()
-			Discontinuity = ptsErr[2].split()
-			r_server.zadd(dateMac, "ptsError:" + ptsError[1], datetimeUnix)
-			r_server.zadd(dateMac, "Discontinuity:" + Discontinuity[1], datetimeUnix)
-		elif REGM_stalled.search(line):
-			stalledErr = REGEXdecodeerr.findall(line)
-			stalled = stalledErr[1].split()
-			iframeErr = stalledErr[2].split()
-			badStream = stalledErr[3].split()
-			r_server.zadd(dateMac, "stalled:" + stalled[1], datetimeUnix)
-			r_server.zadd(dateMac, "iframeErr:" + iframeErr[1], datetimeUnix)
-			r_server.zadd(dateMac, "badStream:" + badStream[1], datetimeUnix)
-		elif REGM_rtsplog.search(line):
-			r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
-			if REGEX_rtsp_died.search(line):
-				r_server.zadd(dateMac, "rtsperr:stream died", datetimeUnix)
-			elif REGEX_rtsp_end.search(line):
-				r_server.zadd(dateMac, "rtsperr:end of stream", datetimeUnix)
-			elif REGEX_rtsp_fail.search(line):
-				r_server.zadd(dateMac, "rtsperr:Connection Failed", datetimeUnix)
-			elif REGEX_rtsp_command.search(line):
-				r_server.zadd(dateMac, "rtsperr:command cannot be sent", datetimeUnix)
-			elif REGEX_rtsp_response.search(line):
-				r_server.zadd(dateMac, "rtsperr:RTSP command could not read", datetimeUnix)
-			elif REGEX_rtsp_asset.search(line):
-				r_server.zadd(dateMac, "rtsperr:asset not found", datetimeUnix)
-			elif REGEX_rtsp_video.search(line):
-				r_server.zadd(dateMac, "rtsperr:does not exist", datetimeUnix)
-			elif REGEX_rtsp_server_stop.search(line):
-				r_server.zadd(dateMac, "rtsperr:server stopped the connection", datetimeUnix)
-			elif REGEX_rtsp_server_auth.search(line):
-				r_server.zadd(dateMac, "rtsperr:server authentication err", datetimeUnix)
-			elif REGEX_rtsp_further.search(line):
-				r_server.zadd(dateMac, "rtsperr:Further action", datetimeUnix)
-		elif REGM_mcast.search(line):
-			r_server.zadd(dateMac, "mcast:1", datetimeUnix)
-			r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
-		elif REGM_invalid.search(line):
-			r_server.zadd(dateMac, "invaliddata:1", datetimeUnix)
-			r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
-			#		else:
-#			r_server.zadd('badlines', line, datetimeUnix)
-
+					r_server.zadd(dateMac, "ip:" + firmware[1], datetimeUnix)
+					r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)				
+			elif REGM_uptime.search(line):
+				uptTMP = REGEXupDays.findall(line)
+				minDag = 1
+				if (uptTMP):
+					minDag = 10000
+				if not (uptTMP):
+					uptTMP = REGEXupHourMin.findall(line)
+				if not (uptTMP):
+					uptTMP = REGEXupMin.findall(line)
+				upt = uptTMP[0].split()[1].replace(':', "") #remove "up", space & :
+				upt = str(int(upt) * minDag)
+				r_server.zadd(dateMac, "upt:" + upt, datetimeUnix)
+			elif REGM_uptime_sec.findall(line):
+				uptTMP = REGEXupSec.findall(line)
+				if uptTMP:
+					upt = REGEXupSecDetail.findall(uptTMP[0])[0]
+					r_server.zadd(dateMac, "uptSec:" + upt, datetimeUnix)
+			elif REGM_playing.search(line):
+				if REGEXplayurl.search(line):
+					playurl = REGEXplayurl.findall(line)
+					r_server.zadd(dateMac, "url:" + playurl[0].split('/')[2], datetimeUnix)				
+				elif REGEXip.search(line):
+					playurl = REGEXip.findall(line)
+					if (len(playurl) > 1):
+						r_server.zadd(dateMac, "url:" + playurl[1], datetimeUnix)
+					else:
+						r_server.zadd(dateMac, "url:unknown", datetimeUnix)				
+				else:
+					playurl = REGEXplayurl.findall(line)
+					r_server.zadd(dateMac, "fw:" + playurl[0], datetimeUnix)
+#			elif REGM_memory.search(line):
+#				memory = REGEXmem.findall(line)
+#				memTotal = memory[0].split() #Total Mem
+#				memFree = memory[1].split() #Free Memory
+#				kernelCached = memory[2].split() #Kernel Cached
+#				kernelFree = memory[3].split() #Kernel free
+#				r_server.zadd(dateMac, "memTotal:" + memTotal[0], datetimeUnix)
+#				r_server.zadd(dateMac, "memFree:" + memFree[0], datetimeUnix)
+#				r_server.zadd(dateMac, "kernelFree:" + kernelFree[0], datetimeUnix)
+#				r_server.zadd(dateMac, "kernelCached:" + kernelCached[0], datetimeUnix)
+			elif REGM_decodeErr.search(line):
+				dErr = REGEXdecodeerr.findall(line)
+				dErrOflow = dErr[1].split()
+				dErrDrops = dErr[2].split()
+				operacrash = dErr[3].split();
+				dErrII = REGEXdecodeerrII.findall(line)
+				dErrErrors = dErrII[0]
+				r_server.zadd(dateMac, "operaCrash:" + operacrash[1], datetimeUnix)
+				r_server.zadd(dateMac, "decodeOflow:" + dErrOflow[1], datetimeUnix)
+				r_server.zadd(dateMac, "ddecodeDrops:" + dErrDrops[1], datetimeUnix)
+				r_server.zadd(dateMac, "decodeErr:" + dErrErrors[1:-1], datetimeUnix)
+			elif REGM_display.search(line):
+				displayErr = REGEXdecodeerr.findall(line)
+				displayUflow = displayErr[1].split();
+				displayDrops = displayErr[2].split();
+				displayErrII = REGEXdecodeerrII.findall(line)
+				displayErrors = displayErrII[0]
+				r_server.zadd(dateMac, "displayUflow:" + displayUflow[1], datetimeUnix)
+				r_server.zadd(dateMac, "displayDrops:" + displayDrops[1], datetimeUnix)
+				r_server.zadd(dateMac, "displayErr:" + displayErrors[1:-1], datetimeUnix)
+			elif REGM_pts.search(line):
+				ptsErr = REGEXdecodeerr.findall(line)
+				ptsError = ptsErr[1].split()
+				Discontinuity = ptsErr[2].split()
+				r_server.zadd(dateMac, "ptsError:" + ptsError[1], datetimeUnix)
+				r_server.zadd(dateMac, "Discontinuity:" + Discontinuity[1], datetimeUnix)
+			elif REGM_stalled.search(line):
+				stalledErr = REGEXdecodeerr.findall(line)
+				stalled = stalledErr[1].split()
+				iframeErr = stalledErr[2].split()
+				badStream = stalledErr[3].split()
+				r_server.zadd(dateMac, "stalled:" + stalled[1], datetimeUnix)
+				r_server.zadd(dateMac, "iframeErr:" + iframeErr[1], datetimeUnix)
+				r_server.zadd(dateMac, "badStream:" + badStream[1], datetimeUnix)
+			elif REGM_rtsplog.search(line):
+				r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
+				if REGEX_rtsp_died.search(line):
+					r_server.zadd(dateMac, "rtsperr:stream died", datetimeUnix)
+				elif REGEX_rtsp_end.search(line):
+					r_server.zadd(dateMac, "rtsperr:end of stream", datetimeUnix)
+				elif REGEX_rtsp_fail.search(line):
+					r_server.zadd(dateMac, "rtsperr:Connection Failed", datetimeUnix)
+				elif REGEX_rtsp_command.search(line):
+					r_server.zadd(dateMac, "rtsperr:command cannot be sent", datetimeUnix)
+				elif REGEX_rtsp_response.search(line):
+					r_server.zadd(dateMac, "rtsperr:RTSP command could not read", datetimeUnix)
+				elif REGEX_rtsp_asset.search(line):
+					r_server.zadd(dateMac, "rtsperr:asset not found", datetimeUnix)
+				elif REGEX_rtsp_video.search(line):
+					r_server.zadd(dateMac, "rtsperr:does not exist", datetimeUnix)
+				elif REGEX_rtsp_server_stop.search(line):
+					r_server.zadd(dateMac, "rtsperr:server stopped the connection", datetimeUnix)
+				elif REGEX_rtsp_server_auth.search(line):
+					r_server.zadd(dateMac, "rtsperr:server authentication err", datetimeUnix)
+				elif REGEX_rtsp_further.search(line):
+					r_server.zadd(dateMac, "rtsperr:Further action", datetimeUnix)
+			elif REGM_mcast.search(line):
+				r_server.zadd(dateMac, "mcast:1", datetimeUnix)
+				r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
+			elif REGM_invalid.search(line):
+				r_server.zadd(dateMac, "invaliddata:1", datetimeUnix)
+				r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
+			#else:
+				#r_server.zadd('badlines', line, datetimeUnix)
+				#r_server.expire('badlines', 1800)
+		else:
+			print line
 #if match
 REGM_oldfw = re.compile(r"\#033")
 REGM_ipaddress = re.compile(r"IP addr")
