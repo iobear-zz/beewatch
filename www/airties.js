@@ -108,11 +108,11 @@ function showInfo(){
 					lastErr = err;
 				} else {
 					document.getElementById(tstamp).style.backgroundColor = "gray";
-					document.getElementById(tstamp).title = 'no video'+ ' uptime ' + upt;
+					document.getElementById(tstamp).title = 'no video';
 				}
 			} else if (upt) {
 					document.getElementById(tstamp).title = 'reboot';
-					document.getElementById(tstamp).style.backgroundColor = "#00F";
+					document.getElementById(tstamp).style.backgroundColor = "#00F"; //blue
 			} else if (missingMcast) {
 					document.getElementById(tstamp).title = 'no multicast';
 					document.getElementById(tstamp).style.backgroundColor = "red";
