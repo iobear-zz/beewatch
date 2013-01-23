@@ -42,6 +42,7 @@ if (mac) {
 	pullRedis(getRedisUrl('',mac,days,0), 'days');
 }
 </script>
+
 <script src="mouseOver.js"></script>
 <br /><br />
 <div class="kasse">
