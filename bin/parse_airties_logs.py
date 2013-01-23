@@ -72,16 +72,6 @@ def matchmyregex(line):
 				else:
 					playurl = REGEXplayurl.findall(line)
 					r_server.zadd(dateMac, "fw:" + playurl[0], datetimeUnix)
-#			elif REGM_memory.search(line):
-#				memory = REGEXmem.findall(line)
-#				memTotal = memory[0].split() #Total Mem
-#				memFree = memory[1].split() #Free Memory
-#				kernelCached = memory[2].split() #Kernel Cached
-#				kernelFree = memory[3].split() #Kernel free
-#				r_server.zadd(dateMac, "memTotal:" + memTotal[0], datetimeUnix)
-#				r_server.zadd(dateMac, "memFree:" + memFree[0], datetimeUnix)
-#				r_server.zadd(dateMac, "kernelFree:" + kernelFree[0], datetimeUnix)
-#				r_server.zadd(dateMac, "kernelCached:" + kernelCached[0], datetimeUnix)
 			elif REGM_decodeErr.search(line):
 				dErr = REGEXdecodeerr.findall(line)
 				dErrOflow = dErr[1].split()
@@ -158,7 +148,6 @@ REGM_display = re.compile(r"DISPLAY ")
 REGM_rtsplog = re.compile(r"RTSPErrorLogger")
 REGM_pts = re.compile(r"Pts ")
 REGM_stalled = re.compile(r"Stalled")
-REGM_memory = re.compile(r"Memory")
 REGM_uptime = re.compile(r"average")
 REGM_uptime_sec = re.compile(r"log_uptime")
 REGM_mcast = re.compile(r"mcast")
@@ -174,7 +163,6 @@ REGEXdatetime = re.compile(r"(\d+-\d+-\d+\s\d+:\d+:\d+)")
 REGEXip = re.compile(r"(\d+\.\d+\.\d+\.\d+)")
 REGEXmac = re.compile(r"([\dA-F]{2}: [\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2})")
 REGEXplayurl = re.compile(r"([\a-z]{3,4}://[A-Za-z0-9_\.-]+)")
-REGEXmem = re.compile(r"\d+\skB")
 REGEXdecodeerr = re.compile(r":\s\d+")
 REGEXdecodeerrII = re.compile(r":\d+,")
 REGEX_serial = re.compile(r"Serial")
@@ -189,7 +177,7 @@ REGEX_rtsp_server_stop = re.compile(r"server stopped the connection")
 REGEX_rtsp_server_auth = re.compile(r"authentication")
 REGEX_rtsp_further = re.compile(r"Further")
 
-##read python:
+##read redis:
 
 if __name__ == "__main__":
 	for line in queue.consume():
