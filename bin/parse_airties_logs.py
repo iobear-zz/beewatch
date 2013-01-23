@@ -5,8 +5,11 @@ import re, os
 from datetime import datetime, date, time
 import redis
 import time
+from hotqueue import HotQueue
+
 #make redis comnnection
 r_server = redis.Redis("localhost")
+queue = HotQueue("logqueue", host="localhost", port=6379, db=1)
 
 def matchmyregex(line):
 	if not REGM_oldfw.search(line):
@@ -21,9 +24,10 @@ def matchmyregex(line):
 			datetimeUnix = str((int(datetimeUnixTmp)+120)/300*300) #round to strict 5 min interval
 			dateMac = datetimeUnix + macNoDelimt
 			r_server.zadd(dateMac, "stime:" + datetimeUnix, datetimeUnix)
+
 			dateMacLog = 'log' + datetimeUnix + macNoDelimt
 			r_server.zadd(dateMacLog, line, datetimeUnix)
-			r_server.expire(dateMacLog, 864000)
+			r_server.expire(dateMacLog, 172800)
 			if REGM_ipaddress.search(line):
 				firmware = REGEXip.findall(line)
 				if len(firmware) > 2:
@@ -185,30 +189,8 @@ REGEX_rtsp_server_stop = re.compile(r"server stopped the connection")
 REGEX_rtsp_server_auth = re.compile(r"authentication")
 REGEX_rtsp_further = re.compile(r"Further")
 
-##read files:
+##read python:
 
 if __name__ == "__main__":
-	ins = open( "/dev/shm/logs/air.log", "r" )
-	for line in ins:
-		laengde = len(line)
-		if laengde > 4:
-			# print line
-			matchmyregex(line)
-
-filename = '/dev/shm/logs/air.log'
-file = open(filename,'r')
-
-#Find the size of the file and move to the end
-st_results = os.stat(filename)
-st_size = st_results[6]
-file.seek(st_size)
-
-while 1:
-	where = file.tell()
-	line = file.readline()
-	if not line:
-		time.sleep(1)
-		file.seek(where)
-	else:
+	for line in queue.consume():
 		matchmyregex(line)
-		#print line, # already has newline
