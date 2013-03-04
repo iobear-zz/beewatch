@@ -15,13 +15,12 @@ def matchmyregex(line):
 	if not REGM_oldfw.search(line):
 		#generate uniq key to combine multiple loglines from same STB (mac + datetime)
 		macaddr = REGEXmac.findall(line)
-		datetimeTmp = REGEXdatetime.findall(line)
+		datetimeUnix = REGEXdatetimeServer.findall(line)[0]
 		if  macaddr:
 			macNoDelimtTMP = macaddr[0].replace(':', "")
 			macNoDelimt = macNoDelimtTMP.replace(" ", "")
 	
-			datetimeUnixTmp = datetime.strptime(datetimeTmp[0] , "%Y-%m-%d %H:%M:%S").strftime('%s')
-			datetimeUnix = str((int(datetimeUnixTmp)+120)/300*300) #round to strict 5 min interval
+			datetimeUnix = str((int(datetimeUnix)+120)/300*300) #round to strict 5 min interval
 			dateMac = datetimeUnix + macNoDelimt
 			r_server.zadd(dateMac, "stime:" + datetimeUnix, datetimeUnix)
 
@@ -159,7 +158,8 @@ REGEXupSecDetail = re.compile(r"(\d+)")
 REGEXupMin = re.compile(r"(up \d+)")
 REGEXupHourMin = re.compile(r"(up +\d+:\d+)")
 REGEXupDays = re.compile(r"(up \d+ day)")
-REGEXdatetime = re.compile(r"(\d+-\d+-\d+\s\d+:\d+:\d+)")
+REGEXdatetimeSTB = re.compile(r"(\d+-\d+-\d+\s\d+:\d+:\d+)")
+REGEXdatetimeServer = re.compile(r"(^\d{10})");
 REGEXip = re.compile(r"(\d+\.\d+\.\d+\.\d+)")
 REGEXmac = re.compile(r"([\dA-F]{2}: [\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2})")
 REGEXplayurl = re.compile(r"([\a-z]{3,4}://[A-Za-z0-9_\.-]+)")
