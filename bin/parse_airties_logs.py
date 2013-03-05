@@ -27,6 +27,8 @@ def matchmyregex(line):
 			dateMacLog = 'log' + datetimeUnix + macNoDelimt
 			r_server.zadd(dateMacLog, line, datetimeUnix)
 			r_server.expire(dateMacLog, 172800)
+			ip = line.split(' ')[1]
+			r_server.zadd(dateMac, "ip:" + ip, datetimeUnix)
 			if REGM_ipaddress.search(line):
 				firmware = REGEXip.findall(line)
 				if len(firmware) > 2:
@@ -36,10 +38,10 @@ def matchmyregex(line):
 					r_server.set(ipAton, macNoDelimt)
 					r_server.expire(ipAton, 432000)
 					r_server.zadd(dateMac, "fw:" + firmware[1], datetimeUnix)
-					r_server.zadd(dateMac, "ip:" + firmware[2], datetimeUnix)
+					#r_server.zadd(dateMac, "ip:" + firmware[2], datetimeUnix)
 					r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)
 				else:
-					r_server.zadd(dateMac, "ip:" + firmware[1], datetimeUnix)
+					#r_server.zadd(dateMac, "ip:" + firmware[1], datetimeUnix)
 					r_server.zadd(dateMac, "mac:" + macNoDelimt, datetimeUnix)				
 			elif REGM_uptime.search(line):
 				uptTMP = REGEXupDays.findall(line)
@@ -159,7 +161,7 @@ REGEXupMin = re.compile(r"(up \d+)")
 REGEXupHourMin = re.compile(r"(up +\d+:\d+)")
 REGEXupDays = re.compile(r"(up \d+ day)")
 REGEXdatetimeSTB = re.compile(r"(\d+-\d+-\d+\s\d+:\d+:\d+)")
-REGEXdatetimeServer = re.compile(r"(^\d{10})");
+REGEXdatetimeServer = re.compile(r"(^\d{10})")
 REGEXip = re.compile(r"(\d+\.\d+\.\d+\.\d+)")
 REGEXmac = re.compile(r"([\dA-F]{2}: [\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2})")
 REGEXplayurl = re.compile(r"([\a-z]{3,4}://[A-Za-z0-9_\.-]+)")

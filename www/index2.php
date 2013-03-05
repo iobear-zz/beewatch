@@ -2,13 +2,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
 <title>Beewatch</title>
-<script src="jquery.min.js"></script>
+<script src="jslib/jquery.min.js"></script>
+<script src="jslib/jqURL.js"></script>
 <script src="settings.js"></script>
 <script src="cookie.js"></script>
 <script src="airties.js"></script>
 <script src="main.js"></script>
 <script src="utils.js"></script>
 <script src="channels.js"></script>
+<script src="index2.js"></script>
 
 <?php
 $macIN = $_REQUEST['mac'];
@@ -25,13 +27,16 @@ function goToTail() {
 	window.location = tailLink;
 }
 </script>
+
 <?php
 
 if ($mac) {
 	echo '<button onclick="bookmarkBox(mac)">bookmark</button> ';
-	echo '<button onclick="goToTail()">tail</button><br /><br />';
+	echo '<button onclick="goToTail()">tail</button>';
 }
 ?>
+
+<button id="extraLog" onclick="extraLog(ip, mac)">extra log</button><br /><br />
 
 </head>
 <link href="default.css" rel="stylesheet" type="text/css">

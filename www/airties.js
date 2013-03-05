@@ -35,6 +35,7 @@ function calcDisplay(mode, uxdate, macII) {
 	}
 }
 
+var ip = '';
 function showInfo(){
 	var lasttime = 0;
 	var uptime = 0;
