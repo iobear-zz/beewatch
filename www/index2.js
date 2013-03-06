@@ -12,22 +12,22 @@ function hideButtons() {
 }
 
 function extraLog(host, mac) {
-	var divisionChar = ':';
-	var unformattedMAC = mac;
-	var formattedMAC = unformattedMAC.replace('(.{2})', '$1' + divisionChar).substring(0, 17);
+	var mac1 = mac.substring(0, 2);
+	var mac2 = mac.substring(2, 4);
+	var mac3 = mac.substring(4, 6);
+	var mac4 = mac.substring(6, 8);
+	var mac5 = mac.substring(8, 10);
+	var mac6 = mac.substring(10, 12);
 
-	console.log('host ' + host + ' mac ' + formattedMAC);
+	var formattedMAC = mac1 + ':' + mac2 + ':' + mac3 + ':' + mac4 + ':' + mac5 + ':' + mac6;
+
 	if (host) {
-		serverUrl = 'http://' + window.location.hostname + ':8080/api/v1/changeloglevel/' + host + '/' + mac + '/';
+		serverUrl = 'http://' + window.location.hostname + ':8080/api/v1/changeloglevel/' + host + '/' + formattedMAC + '/';
 		$.ajax({
 			url: serverUrl,
 			type: 'POST',
 			success: function(result) {
 				console.log('ok');
-		},
-			error: function(jqXHR, textStatus, errorThrown) {
-				console.log(textStatus);
-				console.log(errorThrown);
 			}
 		});
 	} else {
