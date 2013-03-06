@@ -1,14 +1,14 @@
 function ip2long(a,b,c,d){for(c=b=0;d=a.split('.')[b++];c+=d>>8|b>4?NaN:d*(1<<-8*b))d=parseInt(+d&&d);return c} //from https://gist.github.com/tsaniel
 
-function timeConverter(UNIX_timestamp){
-	var a = new Date(UNIX_timestamp*1000);
+function timeConverter(UNIX_timestamp) {
+	var a = new Date(UNIX_timestamp * 1000);
 	var hour = a.getHours();
 	var min = a.getMinutes();
-	var time = hour+':'+min;
+	var time = hour + ':' + min;
 	return time;
 }
 
-function formatUptime(a){
+function formatUptime(a) {
 	if (a.length > 4) {
 		a = a.slice(0, -4);
 		if (a == 1) {
@@ -65,7 +65,7 @@ function goToBars(task) {
 			window.location.href = gotoUrl;
 			return false;
 		} else {
-			$('.ipRangeHTML').html('IP: no active box found');
+			$('.ipRangeHTML').html('<span class="label label-warning">IP: no active box found</span>');
 		}
 	} else {
 		var ipadr = $('#ipadr').val();
@@ -73,7 +73,7 @@ function goToBars(task) {
 		if (mac) {
 			window.location.href = 'index2.php?days=5&mac=' + mac;
 		} else {
-			$('.ipHTML').html('mac: not found');
+			$('.ipHTML').html('<span class="label label-warning">mac: not found</span>');
 		}
 	}
 }

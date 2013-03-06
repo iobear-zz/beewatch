@@ -47,10 +47,10 @@
 							<option value="7">7 days</option>
 							<option value="10">10 days</option>
 						</select> 
-						<input class="btn-primary btn-small" type="submit" value="Submit" />
+						<input class="btn-primary btn-small" type="submit" value="search" />
 					</form>
 					</div>
-					<div class="span5" >Mac address can be _any_ format : xx-xx.xx-xx.xx-xx or xx:xx-xx.xxxxxx</div>
+					<div class="span5">Mac address can be _any_ format : xx-xx.xx-xx.xx-xx or xx:xx-xx.xxxxxx</div>
 				</div>
 				<br/>	
 				<div class="row show-grid" style="background:#eee"><br/>
@@ -66,7 +66,7 @@
 					
 						</form>
 					</div>
-					<div class="span5">Mac address can be _any_ format : xx-xx.xx-xx.xx-xx or xx:xx-xx.xxxxxx</div>
+					<div class="span5" >Mac address can be _any_ format : <br/> xx-xx.xx-xx.xx-xxxx:xx-xx.xxxxxxxxxxxxxxxxxx </br> xxxxxxxxxxxx <br/> xx-xx.xx-xx.xx </div>
 				</div>
 				<br/>
 				<div class="row show-grid" style="background:#eee"><br/	>
@@ -75,7 +75,7 @@
 							<span class="add-on">IP:</span>
 							<input id="ipadr" id="name" class="input-small" type="text" placeholder="10.24.1.18"/><button class="btn-primary btn-small" id="id" onclick="goToBars()">Search</button>
 						</div>
-						<div class="ipHTML"></div>
+						<div class="ipHTML"></div><br/>
 					</div>
 					<div class="span5">IP address format : x.x.x.x</div>
 				</div>
@@ -90,7 +90,7 @@
 								<button class="btn-primary btn-small" onclick="goToBars('range')">Search</button>
 							</div>
 						
-						<div class="ipRangeHTML"></div>
+						<div class="ipRangeHTML"></div><br/>
 					</div>
 					<div class="span5">IP address format : x.x.x.x</div>
 				</div>
@@ -103,7 +103,7 @@
 								var boxAlias = unescape(boXes[k]);
 								var boxLink = ' <a href="index2.php?mac=' + k + '&days=5">' + k + '</a> ' + boxAlias;
 								document.write('<div id="' + k + '">');
-								document.write('<a href="javascript:void(0)" onclick="deleteCookie(\''+k+'\');">[x]</a>' + boxLink + '<br /></div>');
+								document.write('<a href="javascript:void(0)" onclick="deleteCookie(\''+k+'\');"><i class="icon-remove"></i></a>' + boxLink + '<br /></div>');
 							}
 						</script><br/>
 					</div>
