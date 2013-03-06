@@ -1,83 +1,114 @@
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
-<title>Beewatch</title>
-</head>
-<link href="default.css" rel="stylesheet" type="text/css">
-<script src="jslib/jquery.min.js"></script>
-<script src="settings.js"></script>
-<script src="cookie.js"></script>
-<script src="utils.js"></script>
-<body>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+		<title>Beewatch</title>
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+	</head>
+	<body>
+		<script src="jslib/jquery.min.js"></script>
+		<script src="settings.js"></script>
+		<script src="cookie.js"></script>
+		<script src="utils.js"></script>
+		<script src="jslib/bootstrap.min.js"></script>
+		<br />
 
-<br />
-<form name="input" action="index2.php" method="get">
-mac: <input type="text" value="001CA8A7BDB1" name="mac" />
-<select name="days">
-	<option value="1">1 day</option>
-	<option value="2">2 days</option>
-	<option value="3">3 days</option>
-	<option value="4">4 days</option>
-	<option value="5" SELECTED >5 days</option>
-	<option value="6">6 days</option>
-	<option value="7">7 days</option>
-	<option value="8">8 days</option>
-	<option value="9">9 days</option>
-	<option value="10">10 days</option>
-</select> 
-<input type="submit" value="Submit" />
-</form>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				</button>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li><a href="/" data-toggle="tab">Home</a></li>
+					</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		</div>
+	<div class="container">
+		<br/><br/>	
 
-IP: <input id="ipadr" id="name" type="text" value="10.24.1.18"/><button id="id" onclick="goToBars()">Submit</button>
-<div class="ipHTML"></div>
+			    <div class="row show-grid" style="background:#eee"><br/>
+			    	<div class="span5">
+					<form class="form-inline" action="index2.php" method="get">
+						<div class="input-prepend">
+							<span class="add-on">MAC:</span>
+							<input type="text" class="input-default" placeholder="001CA8A7BDB1" name="mac" />
+						</div>
+						<select class="input-small" name="days">
+							<option value="1">1 day</option>
+							<option value="2">2 days</option>
+							<option value="3">3 days</option>
+							<option value="4">4 days</option>
+							<option value="5" SELECTED >5 days</option>
+							<option value="7">7 days</option>
+							<option value="10">10 days</option>
+						</select> 
+						<input class="btn-primary btn-small" type="submit" value="Submit" />
+					</form>
+					</div>
+					<div class="span5" >Mac address can be _any_ format : xx-xx.xx-xx.xx-xx or xx:xx-xx.xxxxxx</div>
+				</div>
+				<br/>	
+				<div class="row show-grid" style="background:#eee"><br/>
+					<div class="span5">
+						<form class="form-horizontal" name="input" action="index2.php" method="get">
+							Compare STB's:<br/>
+							<textarea cols="40" rows="5" name="macs"></textarea>
+						<br/>
+							<input type="text" name="daysago" class="input-mini" value="0"/>
+							<span class="add-on">Days ago</span>
 
-<br />Compare STB's<br />
-<form name="input" action="index2.php" method="get">
-<textarea cols="40" rows="5" name="macs">
-00:1C:A8-A7.BD9B
-001CA8A7BDB1
-</textarea><br />
-Days ago: <input type="text" name="daysago" size="2" value="0"/>
-<input type="submit" value="compare" />
-</form><br />
-IPrange: <input id="ipstart" id="name" type="text" value="10.24.1.1"/>
-<input id="ipend" id="name" type="text" value="10.24.1.254"/>
-<button id="id" onclick="goToBars('range')">Submit</button>
-<div class="ipRangeHTML"></div>
-<br />
-<br />Bookmarked boxes<br />
-<script>
-	var boXes=getCookie();
-	for (var k in boXes) {
-		var boxAlias = unescape(boXes[k]);
-		var boxLink = ' <a href="index2.php?mac=' + k + '&days=5">' + k + '</a> ' + boxAlias;
-		document.write('<div id="' + k + '">');
-		document.write('<a href="javascript:void(0)" onclick="deleteCookie(\''+k+'\');">[x]</a>' + boxLink + '<br /></div>');
-	}
+							<input class="btn-primary btn-small" type="submit" value="compare" />
+					
+						</form>
+					</div>
+					<div class="span5">Mac address can be _any_ format : xx-xx.xx-xx.xx-xx or xx:xx-xx.xxxxxx</div>
+				</div>
+				<br/>
+				<div class="row show-grid" style="background:#eee"><br/	>
+					<div class="span5">
+						<div class="input-prepend">
+							<span class="add-on">IP:</span>
+							<input id="ipadr" id="name" class="input-small" type="text" placeholder="10.24.1.18"/><button class="btn-primary btn-small" id="id" onclick="goToBars()">Search</button>
+						</div>
+						<div class="ipHTML"></div>
+					</div>
+					<div class="span5">IP address format : x.x.x.x</div>
+				</div>
+				<br/>
+				<div class="row show-grid" style="background:#eee"><br/>
+					<div class="span5">
+						
+							<div class="input-prepend">
+								<span class="add-on">IPrange:</span>
+								<input class="input-small" id="ipstart" type="text" value="10.24.1.1"/>
+								<input class="input-small" id="ipend" type="text" value="10.24.1.254"/>
+								<button class="btn-primary btn-small" onclick="goToBars('range')">Search</button>
+							</div>
+						
+						<div class="ipRangeHTML"></div>
+					</div>
+					<div class="span5">IP address format : x.x.x.x</div>
+				</div>
+				<br/>
+				<div class="row show-grid" style="background:#eee"><br/>
+					<div class="span5">
+						<script>
+							var boXes=getCookie();
+							for (var k in boXes) {
+								var boxAlias = unescape(boXes[k]);
+								var boxLink = ' <a href="index2.php?mac=' + k + '&days=5">' + k + '</a> ' + boxAlias;
+								document.write('<div id="' + k + '">');
+								document.write('<a href="javascript:void(0)" onclick="deleteCookie(\''+k+'\');">[x]</a>' + boxLink + '<br /></div>');
+							}
+						</script><br/>
+					</div>
+				</div>
+	</div> <!-- /container -->
 
-	function goToBars(task) {
-		if (task == "range") {
-			var ipStart = $("#ipstart").val();
-			var ipStart = ip2long(ipStart);
-			var ipEnd = $("#ipend").val();
-			var ipEnd = ip2long(ipEnd);
-			var macs = resolveIP(ipStart, ipEnd);
-			if (macs) {
-				window.location.href = 'index2.php?daysago=0&macs=' + macs;
-			} else {
-				$(".ipRangeHTML").html('IP: no active box found');
-			}
-		} else {
-			var ipadr = $("#ipadr").val();
-			mac = resolveIP(ip2long(ipadr));
-			if (mac) {
-				window.location.href = 'index2.php?days=5&mac=' + mac;
-			} else {
-				$(".ipHTML").html('mac: not found');
-			}
-		}
-	}
-</script>
-<br /><br />
-</body>
+	</body>
 </html>

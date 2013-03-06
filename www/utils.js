@@ -30,7 +30,7 @@ function secondsToTime(secs) { // from http://codeaid.net/javascript/convert-sec
 	var days = Math.floor(hours / 24);
 
 	if (days) {
-		return days + ' days'
+		return days + ' days';
 	} else {
 		return hours + 'H' + minutes;
 	}
@@ -38,17 +38,42 @@ function secondsToTime(secs) { // from http://codeaid.net/javascript/convert-sec
 
 function resolveIP(ipstart, ipend) {
 	if (ipend) {
-		var ipUrl = jsonUrl + "?ipstart=" + ipstart + "&ipend=" + ipend;
+		var ipUrl = jsonUrl + '?ipstart=' + ipstart + '&ipend=' + ipend;
 	} else {
-		var ipUrl = jsonUrl + "?ipstart=" + ipstart;
+		var ipUrl = jsonUrl + '?ipstart=' + ipstart;
 	}
-	$.ajax({ type: "POST",   
+	$.ajax({ type: 'GET',
 		url: ipUrl,
-	    dataType: "html",
+	    dataType: 'html',
 		async: false,
-		success : function(text) {
+		success: function(text) {
 			retur = text;
 		}
 	});
 	return retur;
+}
+
+function goToBars(task) {
+	if (task == 'range') {
+		var ipStart = $('#ipstart').val();
+		var ipStart = ip2long(ipStart);
+		var ipEnd = $('#ipend').val();
+		var ipEnd = ip2long(ipEnd);
+		macs = resolveIP(ipStart, ipEnd);
+		if (macs) {
+			var gotoUrl = '/index2.php?daysago=0&macs=' + macs;
+			window.location.href = gotoUrl;
+			return false;
+		} else {
+			$('.ipRangeHTML').html('IP: no active box found');
+		}
+	} else {
+		var ipadr = $('#ipadr').val();
+		mac = resolveIP(ip2long(ipadr));
+		if (mac) {
+			window.location.href = 'index2.php?days=5&mac=' + mac;
+		} else {
+			$('.ipHTML').html('mac: not found');
+		}
+	}
 }
