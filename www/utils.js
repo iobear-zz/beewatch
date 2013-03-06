@@ -71,7 +71,7 @@ function goToBars(task) {
 		var ipadr = $('#ipadr').val();
 		mac = resolveIP(ip2long(ipadr));
 		if (mac) {
-			window.location.href = 'index2.php?days=5&mac=' + mac;
+			window.location.href = 'index2.php?mac=' + mac + '&days=5';
 		} else {
 			$('.ipHTML').html('<span class="label label-warning">mac: not found</span>');
 		}

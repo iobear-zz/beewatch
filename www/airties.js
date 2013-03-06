@@ -4,7 +4,7 @@ var macIII = 0;
 function genGreyBar(startsec, macII) {
 	var f = startsec + 86100; //length of the bar = ~24h
 	while (startsec <= f) {
-		document.write('<div id='+ startsec + '_' + macII + ' title="no info" class="st"></div>');
+		document.write('<div id=' + startsec + '_' + macII + ' title="no info" class="st"></div>');
 		startsec = startsec + 300; //5min jump
 	}
 }
@@ -26,9 +26,9 @@ function calcDisplay(mode, uxdate, macII) {
 		unixtime = unixtime + 86400; //adding an extra day, to wiew the present day
 		var startsec = unixtime - daysec;
 
-		while ( startsec < unixtime) {
-			genGreyBar(startsec,macII);
-			var humanDate = new Date (startsec*1000);
+		while (startsec < unixtime) {
+			genGreyBar(startsec, macII);
+			var humanDate = new Date(startsec * 1000);
 			document.write('<div class="date">' + humanDate.getDate() + ' ' + monthNames[humanDate.getMonth()] + ' ' + macII + '</div><br />');
 			startsec = startsec + 86400;
 		}
@@ -36,14 +36,14 @@ function calcDisplay(mode, uxdate, macII) {
 }
 
 var ip = '';
-function showInfo(){
+function showInfo() {
 	var lasttime = 0;
 	var uptime = 0;
 	var lastErr = 0;
 	var JSONvalue = 0;
 	var stbErr = new Array();
 	var errorList = new Array();
-	errorList = ['badStream', 'ddecodeDrops','decodeErr', 'decodeOflow', 'displayDrops','displayErr','displayUflow','iframeErr','ptsError','Discontinuity','stalled'];
+	errorList = ['badStream', 'ddecodeDrops', 'decodeErr', 'decodeOflow', 'displayDrops', 'displayErr', 'displayUflow', 'iframeErr', 'ptsError', 'Discontinuity', 'stalled'];
 	$.each(data, function(index, JSONvalue) {
 		var error5min = 0;
 		var missingMcast = 0;
@@ -53,9 +53,9 @@ function showInfo(){
 		missingMcast = data[index]['mcast'];
 		rtsperr = data[index]['rtsperr'];
 		var err = 0;
-		for(key in JSONvalue) {
+		for (key in JSONvalue) {
 			//construct errors array
-			if ($.inArray(key, errorList)!== -1) {
+			if ($.inArray(key, errorList) !== -1) {
 				if (JSONvalue[key]) {
 					stbErr[key] = JSONvalue[key];
 				}
@@ -67,7 +67,7 @@ function showInfo(){
 				err = err + parseInt(stbErr[k]);
 			}
 		}
-		
+
 		if (data[index]['mac']) {
 			macIII = data[index]['mac'];
 		}
