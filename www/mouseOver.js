@@ -28,6 +28,9 @@ function showDetails() {
 			if (name == 'uptSec') {
 				val = secondsToTime(val);
 			}
+			if (name == 'url') {
+				val = returnChannel(val);
+			}
 			$('.' + name).html(name + ': ' + val);
 		});
 	});

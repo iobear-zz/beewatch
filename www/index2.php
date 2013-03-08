@@ -16,7 +16,7 @@
 		<script src="utils.js"></script>
 		<script src="airties.js"></script>
 		<script src="main.js"></script>
-		<script src="channels.js"></script>
+		<script src="waoo/channels.js"></script>
 		<script src="index2.js"></script>
 		<script src="jslib/bootstrap.min.js"></script>
 		<br />
