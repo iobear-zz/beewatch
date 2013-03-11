@@ -1,0 +1,33 @@
+@charset "UTF-8";
+/* CSS Document */
+
+Body{
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:1.188em;
+	padding: 10px 40px 10px 40px;
+}
+.st{
+	width: 3px;
+	height: 15px;
+	margin-right: 0px;
+	float: left;
+	background-color: #aaa;
+}
+.kasse, .kassesidst{
+	font-size: 0.8em;
+	margin: 0 10px;
+	float: left;
+	width: 170px;
+}	
+.kasse {
+	border-right: 1px dotted #bbb; 
+}
+.date{
+	font-size: 0.7em;
+	margin-left: 10px;
+	float: left;
+	clear: right;
+}
+.headline{
+	font-weight: bold;
+}	
