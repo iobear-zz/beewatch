@@ -40,44 +40,62 @@ function showInfo() {
 	var lasttime = 0;
 	var uptime = 0;
 	var lastErr = 0;
+	var lastDerr = 0;
 	var JSONvalue = 0;
 	var stbErr = new Array();
+	var displayErr = new Array();
 	var errorList = new Array();
-	errorList = ['badStream', 'ddecodeDrops', 'decodeErr', 'decodeOflow', 'displayDrops', 'displayErr', 'displayUflow', 'iframeErr', 'ptsError', 'Discontinuity', 'stalled'];
+	var displayElist = new Array();
+	errorList = ['badStream', 'ddecodeDrops', 'decodeErr', 'decodeOflow', 'iframeErr', 'ptsError', 'Discontinuity', 'stalled'];
+	displayElist = ['displayDrops', 'displayErr', 'displayUflow'];
+
 	$.each(data, function(index, JSONvalue) {
 		var error5min = 0;
 		var missingMcast = 0;
 		var rtsperr = 0;
 		var invaliddata = 0;
+		var err = 0;
+		var dErr = 0;
 		invaliddata = data[index]['invaliddata'];
 		missingMcast = data[index]['mcast'];
 		rtsperr = data[index]['rtsperr'];
-		var err = 0;
 		for (key in JSONvalue) {
-			//construct errors array
-			if ($.inArray(key, errorList) !== -1) {
+			if ($.inArray(key, errorList) !== -1) { //construct errors array
 				if (JSONvalue[key]) {
 					stbErr[key] = JSONvalue[key];
 				}
 			}
+			if ($.inArray(key, displayElist) !== -1) { //construct diplay error array
+				if (JSONvalue[key]) {
+					displayErr[key] = JSONvalue[key];
+				}
+			}
 		}
-		//sum errors
-		for (var k in stbErr) {
+
+		for (var k in stbErr) { //sum errors
 			if (stbErr[k]) {
 				err = err + parseInt(stbErr[k]);
+			}
+		}
+
+		for (var de in displayErr) { //sum errors
+			if (displayErr[de]) {
+				dErr = dErr + parseInt(displayErr[de]);
 			}
 		}
 
 		if (data[index]['mac']) {
 			macIII = data[index]['mac'];
 		}
+
 		var tstamp = parseInt(data[index]['stime']) + '_' + macIII;
-		//var lstamp = data[index]['ltime'];
-		mcast = data[index]['url'];
-		upt = parseInt(data[index]['uptSec']);
+		var mcast = data[index]['url'];
+		var upt = parseInt(data[index]['uptSec']);
+
 		if (!(upt)) {
 			upt = parseInt(data[index]['upt']);
 		}
+
 		ip = data[index]['ip'];
 		fw = data[index]['fw'];
 		if (tstamp && document.getElementById(tstamp)) {
@@ -95,18 +113,25 @@ function showInfo() {
 					} else {
 						showErr = err - lastErr;
 					}
-					if (showErr < 1) {
+
+					if (dErr == lastDerr) {
+						showDErr = 0;
+					} else {
+						showDErr = dErr - lastDerr;
+					}
+
+					if (showErr < 1 && showDErr < 1) {
 						document.getElementById(tstamp).style.backgroundColor = '#39B239'; //green
 						document.getElementById(tstamp).title = '';
-					} else if (showErr < 8) {
+					} else if (showErr < 8 && showErr > 0) {
 						document.getElementById(tstamp).style.backgroundColor = 'yellow';
 					} else if (showErr > 7) {
 						document.getElementById(tstamp).style.backgroundColor = 'red';
 					} else {
 						document.getElementById(tstamp).style.backgroundColor = 'orange';
-						document.getElementById(tstamp).title = 'unknown' + ' uptime ' + upt;
 					}
 					lastErr = err;
+					lastDerr = dErr;
 				} else {
 					document.getElementById(tstamp).style.backgroundColor = 'gray';
 					document.getElementById(tstamp).title = 'no video';
