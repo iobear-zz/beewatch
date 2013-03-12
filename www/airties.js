@@ -10,7 +10,7 @@ function genGreyBar(startsec, macII) {
 }
 
 function calcDisplay(mode, uxdate, macII) {
-	var monthNames = [ "Jan", "Feb", "Mar", "Apr", "Maj", "Juni", "July", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+	var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Juni', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 	var now = new Date();
 	var date = now.getDate();
 	var month = now.getMonth();
@@ -83,43 +83,43 @@ function showInfo() {
 		if (tstamp && document.getElementById(tstamp)) {
 			if (rtsperr) {
 				document.getElementById(tstamp).title = rtsperr;
-				document.getElementById(tstamp).style.backgroundColor = "red";
+				document.getElementById(tstamp).style.backgroundColor = 'red';
 			} else if (upt >= lasttime) {
 				if (missingMcast) {
 					document.getElementById(tstamp).title = 'no multicast';
-					document.getElementById(tstamp).style.backgroundColor = "red";
+					document.getElementById(tstamp).style.backgroundColor = 'red';
 				} else if (mcast) {
-					document.getElementById(tstamp).title = mcast +'_ip:'+ ip;
+					document.getElementById(tstamp).title = mcast + '_ip:' + ip;
 					if (err == lastErr) {
 						showErr = 0;
 					} else {
 						showErr = err - lastErr;
 					}
 					if (showErr < 1) {
-						document.getElementById(tstamp).style.backgroundColor = "#39B239"; //green
+						document.getElementById(tstamp).style.backgroundColor = '#39B239'; //green
 						document.getElementById(tstamp).title = '';
 					} else if (showErr < 8) {
-						document.getElementById(tstamp).style.backgroundColor = "yellow";
+						document.getElementById(tstamp).style.backgroundColor = 'yellow';
 					} else if (showErr > 7) {
-						document.getElementById(tstamp).style.backgroundColor = "red";
+						document.getElementById(tstamp).style.backgroundColor = 'red';
 					} else {
-						document.getElementById(tstamp).style.backgroundColor = "orange";
-						document.getElementById(tstamp).title = 'unknown'+ ' uptime ' + upt;
+						document.getElementById(tstamp).style.backgroundColor = 'orange';
+						document.getElementById(tstamp).title = 'unknown' + ' uptime ' + upt;
 					}
 					lastErr = err;
 				} else {
-					document.getElementById(tstamp).style.backgroundColor = "gray";
+					document.getElementById(tstamp).style.backgroundColor = 'gray';
 					document.getElementById(tstamp).title = 'no video';
 				}
 			} else if (upt) {
 					document.getElementById(tstamp).title = 'reboot';
-					document.getElementById(tstamp).style.backgroundColor = "#00F"; //blue
+					document.getElementById(tstamp).style.backgroundColor = '#00F'; //blue
 			} else if (missingMcast) {
 					document.getElementById(tstamp).title = 'no multicast';
-					document.getElementById(tstamp).style.backgroundColor = "red";
+					document.getElementById(tstamp).style.backgroundColor = 'red';
 			} else if (invaliddata) {
 					document.getElementById(tstamp).title = 'invalid data';
-					document.getElementById(tstamp).style.backgroundColor = "red";
+					document.getElementById(tstamp).style.backgroundColor = 'red';
 			}
 			if (upt && upt > 0) {
 				lasttime = upt;
