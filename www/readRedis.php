@@ -20,14 +20,6 @@ catch (Exception $e) {
 	echo $e->getMessage();
 }
 
-function makeHashArray($stuff) {
-	foreach($stuff as $nogle){
-		$nystreng = split(':', $nogle);
-		$nytArray[$nystreng[0]] = $nystreng[1];
-	}
-	return $nytArray;
-}
-
 if ($unixTime) {
 	$amountOfLoops = 1;
 	$startTime = $unixTime;
@@ -43,7 +35,7 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 	$startTime = $startTime - 300;
 	while($i<=$amoutOfLoops) {
 		$redisString = "log".$startTime.$mac;
-		$redisAnswer = $redis->zrange($redisString, 0, -1);
+		$redisAnswer = $redis->hgetall($redisString);
 		if ($redisAnswer) {
 			foreach($redisAnswer as $nogle){	
 				echo $nogle;
@@ -60,7 +52,7 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 	while($i<=$amoutOfLoops) {
 		$amoutOfLoops = 1;
 		$redisString = "log".$startTime.$mac;
-		$redisAnswer = $redis->zrange($redisString, 0, -1);
+		$redisAnswer = $redis->hgetall($redisString);
 		if ($redisAnswer) {
 			foreach($redisAnswer as $nogle){	
 				echo $nogle;
@@ -74,12 +66,12 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 	$f = 0;
 	while($i<=$amoutOfLoops) {
 		$redisString = $startTime.$mac;
-		$redisAnswer = $redis->zrange($redisString, 0, -1);
+		$redisAnswer = $redis->hgetall($redisString);
 		if ($redisAnswer) {
 			if ($f != 0) {
 				echo ",";
 			}
-			echo json_encode(makeHashArray($redisAnswer));
+			echo json_encode($redisAnswer);
 			$f++;
 		}
 		$i++;
