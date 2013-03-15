@@ -1,4 +1,4 @@
-//Display 24hour status bar, for AirTies
+	//Display 24hour status bar, for AirTies
 
 var macIII = 0;
 function genGreyBar(startsec, macII) {
@@ -101,11 +101,11 @@ function showInfo() {
 		if (tstamp && document.getElementById(tstamp)) {
 			if (rtsperr) {
 				document.getElementById(tstamp).title = rtsperr;
-				document.getElementById(tstamp).style.backgroundColor = 'red';
+				$('#' + tstamp).addClass('bwError');
 			} else if (upt >= lasttime) {
 				if (missingMcast) {
 					document.getElementById(tstamp).title = 'no multicast';
-					document.getElementById(tstamp).style.backgroundColor = 'red';
+					$('#' + tstamp).addClass('bwError');
 				} else if (mcast) {
 					document.getElementById(tstamp).title = mcast + '_ip:' + ip;
 					if (err == lastErr) {
@@ -121,30 +121,30 @@ function showInfo() {
 					}
 
 					if (showErr < 1 && showDErr < 1) {
-						document.getElementById(tstamp).style.backgroundColor = '#39B239'; //green
+						$('#' + tstamp).addClass('bwNoError');
 						document.getElementById(tstamp).title = '';
 					} else if (showErr < 8 && showErr > 0) {
-						document.getElementById(tstamp).style.backgroundColor = 'yellow';
+						$('#' + tstamp).addClass('bwWarn');
 					} else if (showErr > 7) {
-						document.getElementById(tstamp).style.backgroundColor = 'red';
+						$('#' + tstamp).addClass('bwError');
 					} else {
-						document.getElementById(tstamp).style.backgroundColor = 'orange';
+						$('#' + tstamp).addClass('bwDisplayError');
 					}
 					lastErr = err;
 					lastDerr = dErr;
 				} else {
-					document.getElementById(tstamp).style.backgroundColor = 'gray';
 					document.getElementById(tstamp).title = 'no video';
+					$('#' + tstamp).addClass('bwNoInfo');
 				}
 			} else if (upt) {
 					document.getElementById(tstamp).title = 'reboot';
-					document.getElementById(tstamp).style.backgroundColor = '#00F'; //blue
+					$('#' + tstamp).addClass('bwInfo');
 			} else if (missingMcast) {
 					document.getElementById(tstamp).title = 'no multicast';
-					document.getElementById(tstamp).style.backgroundColor = 'red';
+					$('#' + tstamp).addClass('bwError');
 			} else if (invaliddata) {
 					document.getElementById(tstamp).title = 'invalid data';
-					document.getElementById(tstamp).style.backgroundColor = 'red';
+					$('#' + tstamp).addClass('bwError');
 			}
 			if (upt && upt > 0) {
 				lasttime = upt;

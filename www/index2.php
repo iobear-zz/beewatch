@@ -43,7 +43,7 @@
 						<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"></button>
 						<div class="nav-collapse collapse">
 							<ul class="nav">
-								<li><a href="index.html" data-toggle="tab">Home</a></li>
+								<li><a href="index.html" data-toggle="tab"></a></li>
 							</ul>
 						</div><!--/.nav-collapse -->
 					</div>

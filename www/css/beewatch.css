@@ -30,4 +30,22 @@ Body{
 }
 .headline{
 	font-weight: bold;
-}	
+}
+.bwError{
+	background-color: red;
+}
+.bwWarn{
+	background-color: yellow;
+}
+.bwInfo{
+	background-color: #00F; //blue
+}
+.bwNoError{
+	background-color: #39B239; //green
+}
+.bwNoInfo{
+	background-color: gray;
+}
+.bwDisplayError{
+	background-color: orange;
+}
