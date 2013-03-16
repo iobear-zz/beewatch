@@ -58,3 +58,6 @@ Body{
 .bwDisplayError{
 	background-color: orange;
 }
+.bwOffline{
+	background-color: #aaa;
+}

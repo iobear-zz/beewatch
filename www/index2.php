@@ -124,6 +124,7 @@
 			<div class="stPopup bwNoError"></div><div class="bwPopupText"> No error found</div>
 			<div class="stPopup bwDisplayError"></div><div class="bwPopupText"> Display error</div>
 			<div class="stPopup bwNoInfo"></div><div class="bwPopupText"> In full screen menu - Media player disabled</div>
+			<div class="stPopup bwOffline"></div><div class="bwPopupText"> Offline</div>
 		</div>
 		<div class="modal-footer">
 			<a href="#" class="btn" data-dismiss="modal">Close</a>
