@@ -49,7 +49,9 @@
 					</div>
 				</div>
 			</div>
-
+			<a data-toggle="modal" href="#color-popup" class="btn">
+				<div class="st bwError"></div> <div class="st bwWarn"></div> <div class="st bwInfo"></div> <div class="st bwNoError"></div> <div class="st bwDisplayError"></div> <div class="st bwNoInfo"></div>
+			</a>
 		<?php
 			if ($mac) {
 				echo '<button onclick="bookmarkBox(mac)">bookmark</button> ';
@@ -69,7 +71,7 @@
 				echo "<br/><br/>";
 			}
 		?>
-
+		
 		<script src="mouseOver.js"></script>
 		
 		<div class="kasse">
@@ -109,4 +111,23 @@
 	</div>
 		<div id="data"></div>
 	</body>
+
+	<div id="color-popup" class="modal hide" style="display: none; ">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">×</a>
+			<h3>Colors?</h3>
+		</div>
+		<div class="modal-body">
+			<div class="stPopup bwError"></div><div class="bwPopupText"> Visible error </div>
+			<div class="stPopup bwWarn"></div><div class="bwPopupText"> Small glitch</div>
+			<div class="stPopup bwInfo"></div><div class="bwPopupText"> Reboot</div>
+			<div class="stPopup bwNoError"></div><div class="bwPopupText"> No error found</div>
+			<div class="stPopup bwDisplayError"></div><div class="bwPopupText"> Display error</div>
+			<div class="stPopup bwNoInfo"></div><div class="bwPopupText"> In full screen menu - Media player disabled</div>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">Close</a>
+		</div>
+	</div>
+
 </html>

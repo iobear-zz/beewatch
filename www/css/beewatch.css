@@ -9,9 +9,18 @@ Body{
 .st{
 	width: 3px;
 	height: 15px;
-	margin-right: 0px;
+	margin-right: 0;
 	float: left;
 	background-color: #aaa;
+}
+.stPopup{
+	width: 10px;
+	height: 15px;
+	float: left;
+}
+.bwPopupText{
+	font-size: 0.8em;
+	margin-left: 1em;
 }
 .kasse, .kassesidst{
 	font-size: 0.8em;
