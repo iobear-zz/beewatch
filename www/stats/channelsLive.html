@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>STB usage cloud - quick n' dirty</title>
+    <link rel="stylesheet" type="text/css" href="jslib/jqcloud.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="jslib/jqcloud-1.0.3.min.js"></script>
+    <script type="text/javascript" src="../waoo/channels.js"></script>
+    <script type="text/javascript">
+      $.ajax({
+        url: '/readRedis.php?channels=1',
+          success: function(data){
+              jsonArray = [];
+              $.each(data, function(k, v) {
+                var jsonObject = jQuery.parseJSON('{"text":"' + returnChannel(k) + '","weight":' + v + '}');
+                jsonArray.push(jsonObject)
+              });
+              $("#channelsCloud").jQCloud(jsonArray);
+          }
+      });
+    </script>
+  </head>
+  <body>
+    <div id="channelsCloud" style="width: 550px; height: 350px;"></div>
+  </body>
+</html>

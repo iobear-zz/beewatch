@@ -91,6 +91,13 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 	} else {
 		echo $redis->get($_REQUEST['ipstart']);
 	}
+} elseif ($_REQUEST['channels']) {
+	$startTime = mktime(date(H),date(i),0,date(n),date(d),date(Y)); //sec = 00
+	$startTime = round(($startTime+120)/300)*300; // force 5 min timeslot
+	$startTime = $startTime - 600;
+	$redisString = "statsChannel".$startTime;
+	$redisAnswer = $redis->hgetall($redisString);
+	echo json_encode($redisAnswer);
 }
 
 ?>
