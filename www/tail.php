@@ -17,7 +17,7 @@
  echo "unixtime='".$unixtime."';";
  echo "</script>";
 ?>
-<script src="jquery.min.js"></script>
+<script src="jslib/jquery.min.js"></script>
 <script src="settings.js"></script>
 <script type="text/javascript">
     var lastByte = 0;
