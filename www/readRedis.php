@@ -92,12 +92,34 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 		echo $redis->get($_REQUEST['ipstart']);
 	}
 } elseif ($_REQUEST['channels']) {
+
 	$startTime = mktime(date(H),date(i),0,date(n),date(d),date(Y)); //sec = 00
 	$startTime = round(($startTime+120)/300)*300; // force 5 min timeslot
 	$startTime = $startTime - 600;
 	$redisString = "statsChannel".$startTime;
 	$redisAnswer = $redis->hgetall($redisString);
 	echo json_encode($redisAnswer);
+
+} elseif ($_REQUEST['stbamount']) {
+
+	$startTime = mktime(date(H),date(i),0,date(n),date(d),date(Y)); //sec = 00
+	$startTime = round(($startTime+120)/300)*300; // force 5 min timeslot
+	$amoutOfLoops = 1000;
+	$startTime = $startTime - 300;
+	echo "beewatch([";
+	while($i<=$amoutOfLoops) {
+		$redisString = "statsBoxes".$startTime;
+		$redisAnswer = $redis->get($redisString);
+		//echo "bnj".$redisAnswer;
+		if ($redisAnswer) {
+				$awnArr[$startTime]=$redisAnswer;
+		}
+		$i++;
+		$startTime = $startTime - 300;
+	}
+	echo json_encode($awnArr);
+	echo "]);";
 }
+
 
 ?>
