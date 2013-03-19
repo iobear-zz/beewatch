@@ -16,16 +16,20 @@ r_server = redis.Redis("localhost")
 def countKeys(searchString):
     channels = []
     setTopBox = r_server.keys(searchString)
+    setTopBoxAmount = len(setTopBox)
+
     for key in setTopBox:
         url = r_server.hget(key, "url")
         if url:
             channels.append(url)
 
-    redisKeyName = 'statsChannel' + searchString.split('*')[0]
+    redisKeyNameChannels = 'statsChannel' + searchString.split('*')[0]
+    redisKeyNameBoxes = 'statsBoxes' + searchString.split('*')[0]
     redisChannels = dict(dupli(channels))
-    r_server.hmset(redisKeyName, redisChannels)
-    r_server.expire(redisKeyName, 2764800)  # 32 days
-
+    r_server.hmset(redisKeyNameChannels, redisChannels)
+    r_server.expire(redisKeyNameChannels, 2764800)  # 32 days
+    r_server.set(redisKeyNameBoxes, setTopBoxAmount)
+    r_server.expire(redisKeyNameBoxes, 2764800)  # 32 days
 
 def dupli(the_list):
     count = the_list.count
