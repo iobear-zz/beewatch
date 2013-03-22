@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
   <head>
     <title>STB usage cloud - quick n' dirty</title>
+    <meta http-equiv="Content-Language" content="en" />
     <link rel="stylesheet" type="text/css" href="jslib/jqcloud.css" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="jslib/jqcloud-1.0.3.min.js"></script>
@@ -15,6 +16,7 @@
       $("#channelsCloud").html("");
       jsonArray = [];
       jsonObject = [];
+      var stbTotal = 0;
       var tv2count = 0;
       var tv2hdCount = 0;
       $.ajax({
@@ -27,12 +29,15 @@
                   tv2hdCount = tv2hdCount + parseInt(v);
                 } else {
                   var jsonObject = $.parseJSON('{"text":"' + returnChannel(k) + '","weight":' + v + '}');
-                  jsonArray.push(jsonObject)
+                  jsonArray.push(jsonObject);
+                  stbTotal = stbTotal + parseInt(v);
                 }
               });
               jsonArray.push($.parseJSON('{"text":"TV 2","weight":' + tv2count + '}'));
               jsonArray.push($.parseJSON('{"text":"TV 2 HD","weight":' + tv2hdCount + '}'));
+              stbTotal = stbTotal + tv2count + tv2hdCount;
               $("#channelsCloud").jQCloud(jsonArray);
+              $("#stbTotalHTML").html(stbTotal + ' STBs');
               window.setTimeout(updateCloud, 300000); //5 min
           }
       });
@@ -41,6 +46,7 @@
   </head>
   <body>
     <div id="channelsCloud" style="width: 550px; height: 350px;"></div>
+    <div id="stbTotalHTML" class="jqcloud"></div>
     <script type="text/javascript">
       updateCloud();
     </script>
