@@ -35,11 +35,17 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 	$startTime = $startTime - 300;
 	while($i<=$amoutOfLoops) {
 		$redisString = "log".$startTime.$mac;
-		$redisAnswer = $redis->hgetall($redisString);
+		$redisAnswer = $redis->hkeys($redisString);
+		unset($redisKeysArr);
 		if ($redisAnswer) {
 			foreach($redisAnswer as $nogle){	
-				echo $nogle;
+				$redisKeysArr[] = $nogle;
 			}
+		}
+		asort($redisKeysArr);
+		foreach ($redisKeysArr as $key => $value) {
+			$redisAnswer = $redis->hget($redisString, $value);
+			echo $redisAnswer;
 		}
 		$i++;
 		$startTime = $startTime + 300;
@@ -52,11 +58,17 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 	while($i<=$amoutOfLoops) {
 		$amoutOfLoops = 1;
 		$redisString = "log".$startTime.$mac;
-		$redisAnswer = $redis->hgetall($redisString);
+		$redisAnswer = $redis->hkeys($redisString);
+		unset($redisKeysArr);
 		if ($redisAnswer) {
 			foreach($redisAnswer as $nogle){	
-				echo $nogle;
+				$redisKeysArr[] = $nogle;
 			}
+		}
+		asort($redisKeysArr);
+		foreach ($redisKeysArr as $key => $value) {
+			$redisAnswer = $redis->hget($redisString, $value);
+			echo $redisAnswer;
 		}
 		$i++;
 		$startTime = $startTime + 300;

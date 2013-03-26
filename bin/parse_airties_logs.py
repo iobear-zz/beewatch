@@ -10,7 +10,7 @@ from hotqueue import HotQueue
 #make redis comnnection
 r_server = redis.Redis("localhost")
 queue = HotQueue("logqueue", host="localhost", port=6379, db=1)
-i=0
+lineNo=0
 
 def matchmyregex(line):
 	if not REGM_oldfw.search(line):
@@ -25,7 +25,7 @@ def matchmyregex(line):
 			dateMac = datetimeUnix + macNoDelimt
 			r_server.hset(dateMac, "stime", datetimeUnix)
 			dateMacLog = 'log' + datetimeUnix + macNoDelimt
-			r_server.hset(dateMacLog, i, line)
+			r_server.hset(dateMacLog, lineNo, line)
 			r_server.expire(dateMacLog, 172800)
 			ip = line.split(' ')[1]
 			r_server.hset(dateMac, "ip", ip)
@@ -181,5 +181,9 @@ REGEX_rtsp_further = re.compile(r"Further")
 ##read redis:
 if __name__ == "__main__":
 	for line in queue.consume():
-		i += 1
-		matchmyregex(line)
+		lineClean = line.split('@')[1]
+		lineNo = line.split('@')[0]
+		try:
+			matchmyregex(lineClean)
+		except: 
+			pass

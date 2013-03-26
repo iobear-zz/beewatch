@@ -7,13 +7,16 @@ from hotqueue import HotQueue
 
 queue = HotQueue("logqueue", host="localhost", port=6379, db=1)
 filename = '/dev/shm/logs/air.log'
+lineNumber = 1
 
 if __name__ == "__main__":
 	ins = open( filename, "r" )
 	for line in ins:
 		laengde = len(line)
 		if laengde > 4:
-			queue.put(line)
+			newLogString = str(lineNumber) + '@' + line
+			queue.put(newLogString)
+			lineNumber += 1
 
 file = open(filename,'r')
 
@@ -29,4 +32,8 @@ while 1:
 		time.sleep(1)
 		file.seek(where)
 	else:
-		queue.put(line)
+		newLogString = str(lineNumber) + '@' + line
+		queue.put(newLogString)
+		lineNumber += 1
+		if lineNumber > 10000000:
+			lineNumber = 1
