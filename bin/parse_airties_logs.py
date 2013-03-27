@@ -5,6 +5,7 @@ import re, os
 from datetime import datetime, date, time
 import redis
 import time
+import traceback
 from hotqueue import HotQueue
 
 #make redis comnnection
@@ -72,9 +73,9 @@ def matchmyregex(line):
 					r_server.hset(dateMac, "fw", playurl[0])
 			elif REGM_decodeErr.search(line):
 				dErr = REGEXdecodeerr.findall(line)
-				dErrOflow = dErr[1].split()
-				dErrDrops = dErr[2].split()
-				operacrash = dErr[3].split();
+				dErrOflow = dErr[0].split()
+				dErrDrops = dErr[1].split()
+				operacrash = dErr[2].split();
 				dErrII = REGEXdecodeerrII.findall(line)
 				dErrErrors = dErrII[0]
 				r_server.hset(dateMac, "operacrash", operacrash[1])
@@ -83,8 +84,8 @@ def matchmyregex(line):
 				r_server.hset(dateMac, "decodeErr", dErrErrors[1:-1])
 			elif REGM_display.search(line):
 				displayErr = REGEXdecodeerr.findall(line)
-				displayUflow = displayErr[1].split();
-				displayDrops = displayErr[2].split();
+				displayUflow = displayErr[0].split();
+				displayDrops = displayErr[1].split();
 				displayErrII = REGEXdecodeerrII.findall(line)
 				displayErrors = displayErrII[0]
 				r_server.hset(dateMac, "displayUflow", displayUflow[1])
@@ -92,15 +93,15 @@ def matchmyregex(line):
 				r_server.hset(dateMac, "displayErr", displayErrors[1:-1])
 			elif REGM_pts.search(line):
 				ptsErr = REGEXdecodeerr.findall(line)
-				ptsError = ptsErr[1].split()
-				Discontinuity = ptsErr[2].split()
+				ptsError = ptsErr[0].split()
+				Discontinuity = ptsErr[1].split()
 				r_server.hset(dateMac, "ptsError", ptsError[1])
 				r_server.hset(dateMac, "Discontinuity", Discontinuity[1])
 			elif REGM_stalled.search(line):
 				stalledErr = REGEXdecodeerr.findall(line)
-				stalled = stalledErr[1].split()
-				iframeErr = stalledErr[2].split()
-				badStream = stalledErr[3].split()
+				stalled = stalledErr[0].split()
+				iframeErr = stalledErr[1].split()
+				badStream = stalledErr[2].split()
 				r_server.hset(dateMac, "stalled", stalled[1])
 				r_server.hset(dateMac, "iframeErr", iframeErr[1])
 				r_server.hset(dateMac, "badStream", badStream[1])
@@ -162,7 +163,7 @@ REGEXupDays = re.compile(r"(up \d+ day)")
 REGEXdatetimeSTB = re.compile(r"(\d+-\d+-\d+\s\d+:\d+:\d+)")
 REGEXdatetimeServer = re.compile(r"(^\d{10})")
 REGEXip = re.compile(r"(\d+\.\d+\.\d+\.\d+)")
-REGEXmac = re.compile(r"([\dA-F]{2}: [\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2})")
+REGEXmac = re.compile(r"([\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2}:[\dA-F]{2})")
 REGEXplayurl = re.compile(r"([\a-z]{3,4}://[A-Za-z0-9_\.-]+)")
 REGEXdecodeerr = re.compile(r":\s\d+")
 REGEXdecodeerrII = re.compile(r":\d+,")
@@ -185,5 +186,7 @@ if __name__ == "__main__":
 		lineNo = line.split('@')[0]
 		try:
 			matchmyregex(lineClean)
-		except: 
+		except:
+			print lineClean
+			print traceback.format_exc()
 			pass
