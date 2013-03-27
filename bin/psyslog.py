@@ -1,10 +1,12 @@
 #!/usr/bin/python
 
-
 ## Tiny Syslog Server in Python.
 ##
 ## This is a tiny syslog server that is able to receive UDP based syslog
-## entries on a specified port and save them to a file.
+## entries on a specified port and save them to a HotQueue in Redis
+#
+#Org file at https://gist.github.com/marcelom/4218010
+#
 
 import SocketServer
 import time
@@ -24,7 +26,6 @@ class SyslogUDPHandler(SocketServer.BaseRequestHandler):
 		laengde = len(data)
 		if laengde > 4:
 			newLogString = "%s@%s %s %s\n" % (lineNumber, int(time.time()), self.client_address[0], data)
-			#print newLogString
 			queue.put(newLogString)
 			lineNumber += 1
 
