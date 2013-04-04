@@ -27,7 +27,7 @@ def matchmyregex(line):
 			r_server.hset(dateMac, "stime", datetimeUnix)
 			dateMacLog = 'log' + datetimeUnix + macNoDelimt
 			r_server.hset(dateMacLog, lineNo, line)
-			r_server.expire(dateMacLog, 172800)
+			r_server.expire(dateMacLog, 95040)
 			ip = line.split(' ')[1]
 			r_server.hset(dateMac, "ip", ip)
 
