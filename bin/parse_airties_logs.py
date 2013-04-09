@@ -14,6 +14,10 @@ queue = HotQueue("logqueue", host="localhost", port=6379, db=1)
 lineNo=0
 
 def matchmyregex(line):
+	expireParsedLog = 2764800 # 32 days
+	expireIPtoMAC = 259200 # 3 days
+	expireRAWlogs = 95040 # 1.1 days
+
 	if not REGM_oldfw.search(line):
 		#generate uniq key to combine multiple loglines from same STB (mac + datetime)
 		macaddr = REGEXmac.findall(line)
@@ -27,7 +31,7 @@ def matchmyregex(line):
 			r_server.hset(dateMac, "stime", datetimeUnix)
 			dateMacLog = 'log' + datetimeUnix + macNoDelimt
 			r_server.hset(dateMacLog, lineNo, line)
-			r_server.expire(dateMacLog, 95040)
+			r_server.expire(dateMacLog, expireRAWlogs)
 			ip = line.split(' ')[1]
 			r_server.hset(dateMac, "ip", ip)
 
@@ -36,11 +40,14 @@ def matchmyregex(line):
 				if len(firmware) > 2:
 					ipAton = reduce(lambda x,y: (x<<8) + y, [ int(x) for x in firmware[2].split('.') ])
 					r_server.set(ipAton, macNoDelimt)
-					r_server.expire(ipAton, 432000)
+					r_server.expire(ipAton, expireIPtoMAC)
 					r_server.hset(dateMac, "fw", firmware[1])
 					r_server.hset(dateMac, "mac", macNoDelimt)
 				else:
 					r_server.hset(dateMac, "mac", macNoDelimt)
+
+				r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_uptime.search(line):
 				uptTMP = REGEXupDays.findall(line)
 				minDag = 1
@@ -53,11 +60,15 @@ def matchmyregex(line):
 				upt = uptTMP[0].split()[1].replace(':', "") #remove "up", space & :
 				upt = str(int(upt) * minDag)
 				r_server.hset(dateMac, "upt", upt)
+				r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_uptime_sec.findall(line):
 				uptTMP = REGEXupSec.findall(line)
 				if uptTMP:
 					upt = REGEXupSecDetail.findall(uptTMP[0])[0]
 					r_server.hset(dateMac, "uptSec", upt)
+					r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_playing.search(line):
 				if REGEXplayurl.search(line):
 					playurl = REGEXplayurl.findall(line)
@@ -71,6 +82,9 @@ def matchmyregex(line):
 				else:
 					playurl = REGEXplayurl.findall(line)
 					r_server.hset(dateMac, "fw", playurl[0])
+
+				r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_decodeErr.search(line):
 				dErr = REGEXdecodeerr.findall(line)
 				dErrOflow = dErr[0].split()
@@ -82,6 +96,8 @@ def matchmyregex(line):
 				r_server.hset(dateMac, "decodeOflow", dErrOflow[1])
 				r_server.hset(dateMac, "ddecodeDrops", dErrDrops[1])
 				r_server.hset(dateMac, "decodeErr", dErrErrors[1:-1])
+				r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_display.search(line):
 				displayErr = REGEXdecodeerr.findall(line)
 				displayUflow = displayErr[0].split();
@@ -91,12 +107,16 @@ def matchmyregex(line):
 				r_server.hset(dateMac, "displayUflow", displayUflow[1])
 				r_server.hset(dateMac, "displayDrops", displayDrops[1])
 				r_server.hset(dateMac, "displayErr", displayErrors[1:-1])
+				r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_pts.search(line):
 				ptsErr = REGEXdecodeerr.findall(line)
 				ptsError = ptsErr[0].split()
 				Discontinuity = ptsErr[1].split()
 				r_server.hset(dateMac, "ptsError", ptsError[1])
 				r_server.hset(dateMac, "Discontinuity", Discontinuity[1])
+				r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_stalled.search(line):
 				stalledErr = REGEXdecodeerr.findall(line)
 				stalled = stalledErr[0].split()
@@ -105,6 +125,8 @@ def matchmyregex(line):
 				r_server.hset(dateMac, "stalled", stalled[1])
 				r_server.hset(dateMac, "iframeErr", iframeErr[1])
 				r_server.hset(dateMac, "badStream", badStream[1])
+				r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_rtsplog.search(line):
 				r_server.hset(dateMac, "mac", macNoDelimt)
 				if REGEX_rtsp_died.search(line):
@@ -127,13 +149,21 @@ def matchmyregex(line):
 					r_server.hset(dateMac, "rtsperr", "server authentication err")
 				elif REGEX_rtsp_further.search(line):
 					r_server.hset(dateMac, "rtsperr", "Further action")
+
+				r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_mcast.search(line):
 				r_server.hset(dateMac, "mcast", 1)
 				r_server.hset(dateMac, "mac", macNoDelimt)
+				r_server.expire(dateMac, expireParsedLog)
+
 			elif REGM_invalid.search(line):
 				r_server.hset(dateMac, "invaliddata", 1)
 				r_server.hset(dateMac, "mac", macNoDelimt)
+				r_server.expire(dateMac, expireParsedLog)
+
 			#else:
+				#print line
 				#r_server.zadd('badlines', line, datetimeUnix)
 				#r_server.expire('badlines', 1800)
 		else:
