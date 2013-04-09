@@ -15,17 +15,18 @@ r_server = redis.Redis("localhost")
 
 def countKeys(searchString):
     channels = []
-    setTopBox = r_server.keys(searchString)
+    setTopBox = r_server.smembers('who' + searchString)
     setTopBoxAmount = len(setTopBox)
 
     for key in setTopBox:
-        url = r_server.hget(key, "url")
+        url = r_server.hget(searchString + key, "url")
         if url:
             channels.append(url)
 
-    redisKeyNameChannels = 'statsChannel' + searchString.split('*')[0]
-    redisKeyNameBoxes = 'statsBoxes' + searchString.split('*')[0]
+    redisKeyNameChannels = 'statsChannel' + searchString
+    redisKeyNameBoxes = 'statsBoxes' + searchString
     redisChannels = dict(dupli(channels))
+
     r_server.hmset(redisKeyNameChannels, redisChannels)
     r_server.expire(redisKeyNameChannels, 2764800)  # 32 days
     r_server.set(redisKeyNameBoxes, setTopBoxAmount)
@@ -42,5 +43,5 @@ if __name__ == "__main__":
     sleep(3)
     timeNow = time.time()
     datetimeUnix = str((int(timeNow)+120)/300*300)  # round to strict 5 min interval
-    searchString = str(int(datetimeUnix) - 300) + "*"  # search the previous 5 min interval
+    searchString = str(int(datetimeUnix) - 300) # search the previous 5 min interval
     countKeys(searchString)

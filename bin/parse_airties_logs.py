@@ -29,9 +29,14 @@ def matchmyregex(line):
 			datetimeUnix = str((int(datetimeUnix)+120)/300*300) #round to strict 5 min interval
 			dateMac = datetimeUnix + macNoDelimt
 			r_server.hset(dateMac, "stime", datetimeUnix)
-			dateMacLog = 'log' + datetimeUnix + macNoDelimt
-			r_server.hset(dateMacLog, lineNo, line)
+			dateMacLog = 'log' + dateMac
+
+			r_server.sadd('who' + datetimeUnix, macNoDelimt) #adds to list af MACs active within this 5 min window
+			r_server.expire('who' + datetimeUnix, expireParsedLog)
+
+			r_server.hset(dateMacLog, lineNo, line) #adds raw log to redis
 			r_server.expire(dateMacLog, expireRAWlogs)
+
 			ip = line.split(' ')[1]
 			r_server.hset(dateMac, "ip", ip)
 
