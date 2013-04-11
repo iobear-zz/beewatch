@@ -10,7 +10,7 @@ from time import sleep
 import redis
 import time
 
-r_server = redis.Redis("localhost")
+r_server = redis.Redis(host='localhost', port=6380, db=0)
 
 
 def countKeys(searchString):

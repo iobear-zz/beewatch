@@ -9,7 +9,8 @@ import traceback
 from hotqueue import HotQueue
 
 #make redis comnnection
-r_server = redis.Redis("localhost")
+r_server = redis.Redis(host='localhost', port=6380, db=0)
+r_server_raw = redis.Redis(host='localhost', port=6379, db=0)
 queue = HotQueue("logqueue", host="localhost", port=6379, db=1)
 lineNo=0
 
@@ -34,8 +35,8 @@ def matchmyregex(line):
 			r_server.sadd('who' + datetimeUnix, macNoDelimt) #adds to list af MACs active within this 5 min window
 			r_server.expire('who' + datetimeUnix, expireParsedLog)
 
-			r_server.hset(dateMacLog, lineNo, line) #adds raw log to redis
-			r_server.expire(dateMacLog, expireRAWlogs)
+			r_server_raw.hset(dateMacLog, lineNo, line) #adds raw log to redis
+			r_server_raw.expire(dateMacLog, expireRAWlogs)
 
 			ip = line.split(' ')[1]
 			r_server.hset(dateMac, "ip", ip)

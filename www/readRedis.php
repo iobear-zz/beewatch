@@ -13,7 +13,21 @@ header('Charset: UTF-8');
 require "predis/autoload.php";
 Predis\Autoloader::register();
 try {
-	$redis = new Predis\Client();
+	$redis = new Predis\Client(array(
+		"scheme" => "tcp",
+		"host" => "127.0.0.1",
+		"port" => 6380));
+}
+catch (Exception $e) {
+	echo "Couldn't connected to Redis";
+	echo $e->getMessage();
+}
+
+try {
+	$redis_raw = new Predis\Client(array(
+		"scheme" => "tcp",
+		"host" => "127.0.0.1",
+		"port" => 6379));
 }
 catch (Exception $e) {
 	echo "Couldn't connected to Redis";
@@ -35,7 +49,7 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 	$startTime = $startTime - 300;
 	while($i<=$amoutOfLoops) {
 		$redisString = "log".$startTime.$mac;
-		$redisAnswer = $redis->hkeys($redisString);
+		$redisAnswer = $redis_raw->hkeys($redisString);
 		unset($redisKeysArr);
 		if ($redisAnswer) {
 			foreach($redisAnswer as $nogle){	
@@ -44,7 +58,7 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 		}
 		asort($redisKeysArr);
 		foreach ($redisKeysArr as $key => $value) {
-			$redisAnswer = $redis->hget($redisString, $value);
+			$redisAnswer = $redis_raw->hget($redisString, $value);
 			echo $redisAnswer;
 		}
 		$i++;
@@ -58,7 +72,7 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 	while($i<=$amoutOfLoops) {
 		$amoutOfLoops = 1;
 		$redisString = "log".$startTime.$mac;
-		$redisAnswer = $redis->hkeys($redisString);
+		$redisAnswer = $redis_raw->hkeys($redisString);
 		unset($redisKeysArr);
 		if ($redisAnswer) {
 			foreach($redisAnswer as $nogle){	
@@ -67,7 +81,7 @@ if ($_REQUEST['logs'] == 1) { //dispay raw logs
 		}
 		asort($redisKeysArr);
 		foreach ($redisKeysArr as $key => $value) {
-			$redisAnswer = $redis->hget($redisString, $value);
+			$redisAnswer = $redis_raw->hget($redisString, $value);
 			echo $redisAnswer;
 		}
 		$i++;
