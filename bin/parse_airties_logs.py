@@ -12,168 +12,170 @@ from hotqueue import HotQueue
 r_server = redis.Redis(host='localhost', port=6380, db=0)
 r_server_raw = redis.Redis(host='localhost', port=6379, db=0)
 queue = HotQueue("logqueue", host="localhost", port=6379, db=1)
-lineNo=0
+lineNo = 0
+
 
 def matchmyregex(line):
-	expireParsedLog = 2764800 # 32 days
-	expireIPtoMAC = 259200 # 3 days
-	expireRAWlogs = 95040 # 1.1 days
+    expireParsedLog = 2764800  # 32 days
+    expireIPtoMAC = 259200  # 3 days
+    expireRAWlogs = 95040  # 1.1 days
 
-	if not REGM_oldfw.search(line):
-		#generate uniq key to combine multiple loglines from same STB (mac + datetime)
-		macaddr = REGEXmac.findall(line)
-		datetimeUnix = REGEXdatetimeServer.findall(line)[0]
-		if  macaddr:
-			macNoDelimtTMP = macaddr[0].replace(':', "")
-			macNoDelimt = macNoDelimtTMP.replace(" ", "")
-	
-			datetimeUnix = str((int(datetimeUnix)+120)/300*300) #round to strict 5 min interval
-			dateMac = datetimeUnix + macNoDelimt
-			r_server.hset(dateMac, "stime", datetimeUnix)
-			dateMacLog = 'log' + dateMac
+    if not REGM_oldfw.search(line):
+        #generate uniq key to combine multiple loglines from same STB (mac + datetime)
+        macaddr = REGEXmac.findall(line)
+        datetimeUnix = REGEXdatetimeServer.findall(line)[0]
 
-			r_server.sadd('who' + datetimeUnix, macNoDelimt) #adds to list af MACs active within this 5 min window
-			r_server.expire('who' + datetimeUnix, expireParsedLog)
+        if macaddr:
+            macNoDelimtTMP = macaddr[0].replace(':', "")
+            macNoDelimt = macNoDelimtTMP.replace(" ", "")
 
-			r_server_raw.hset(dateMacLog, lineNo, line) #adds raw log to redis
-			r_server_raw.expire(dateMacLog, expireRAWlogs)
+            datetimeUnix = str((int(datetimeUnix)+120)/300*300)  # round to strict 5 min interval
+            dateMac = datetimeUnix + macNoDelimt
+            r_server.hset(dateMac, "stime", datetimeUnix)
+            dateMacLog = 'log' + dateMac
 
-			ip = line.split(' ')[1]
-			r_server.hset(dateMac, "ip", ip)
+            r_server.sadd('who' + datetimeUnix, macNoDelimt)  # adds to list af MACs active within this 5 min window
+            r_server.expire('who' + datetimeUnix, expireParsedLog)
 
-			if REGM_ipaddress.search(line):
-				firmware = REGEXip.findall(line)
-				if len(firmware) > 2:
-					ipAton = reduce(lambda x,y: (x<<8) + y, [ int(x) for x in firmware[2].split('.') ])
-					r_server.set(ipAton, macNoDelimt)
-					r_server.expire(ipAton, expireIPtoMAC)
-					r_server.hset(dateMac, "fw", firmware[1])
-					r_server.hset(dateMac, "mac", macNoDelimt)
-				else:
-					r_server.hset(dateMac, "mac", macNoDelimt)
+            r_server_raw.hset(dateMacLog, lineNo, line)  # adds raw log to redis
+            r_server_raw.expire(dateMacLog, expireRAWlogs)
 
-				r_server.expire(dateMac, expireParsedLog)
+            ip = line.split(' ')[1]
+            r_server.hset(dateMac, "ip", ip)
 
-			elif REGM_uptime.search(line):
-				uptTMP = REGEXupDays.findall(line)
-				minDag = 1
-				if (uptTMP):
-					minDag = 10000
-				if not (uptTMP):
-					uptTMP = REGEXupHourMin.findall(line)
-				if not (uptTMP):
-					uptTMP = REGEXupMin.findall(line)
-				upt = uptTMP[0].split()[1].replace(':', "") #remove "up", space & :
-				upt = str(int(upt) * minDag)
-				r_server.hset(dateMac, "upt", upt)
-				r_server.expire(dateMac, expireParsedLog)
+            if REGM_ipaddress.search(line):
+                firmware = REGEXip.findall(line)
+                if len(firmware) > 2:
+                    ipAton = reduce(lambda x, y: (x << 8) + y, [int(x) for x in firmware[2].split('.')])
+                    r_server.set(ipAton, macNoDelimt)
+                    r_server.expire(ipAton, expireIPtoMAC)
+                    r_server.hset(dateMac, "fw", firmware[1])
+                    r_server.hset(dateMac, "mac", macNoDelimt)
+                else:
+                    r_server.hset(dateMac, "mac", macNoDelimt)
 
-			elif REGM_uptime_sec.findall(line):
-				uptTMP = REGEXupSec.findall(line)
-				if uptTMP:
-					upt = REGEXupSecDetail.findall(uptTMP[0])[0]
-					r_server.hset(dateMac, "uptSec", upt)
-					r_server.expire(dateMac, expireParsedLog)
+                r_server.expire(dateMac, expireParsedLog)
 
-			elif REGM_playing.search(line):
-				if REGEXplayurl.search(line):
-					playurl = REGEXplayurl.findall(line)
-					r_server.hset(dateMac, "url", playurl[0].split('/')[2])
-				elif REGEXip.search(line):
-					playurl = REGEXip.findall(line)
-					if (len(playurl) > 1):
-						r_server.hset(dateMac, "url", playurl[1])
-					else:
-						r_server.hset(dateMac, "url", "unknown")
-				else:
-					playurl = REGEXplayurl.findall(line)
-					r_server.hset(dateMac, "fw", playurl[0])
+            elif REGM_uptime.search(line):
+                uptTMP = REGEXupDays.findall(line)
+                minDag = 1
+                if (uptTMP):
+                    minDag = 10000
+                if not (uptTMP):
+                    uptTMP = REGEXupHourMin.findall(line)
+                if not (uptTMP):
+                    uptTMP = REGEXupMin.findall(line)
+                upt = uptTMP[0].split()[1].replace(':', "")  # remove "up", space & :
+                upt = str(int(upt) * minDag)
+                r_server.hset(dateMac, "upt", upt)
+                r_server.expire(dateMac, expireParsedLog)
 
-				r_server.expire(dateMac, expireParsedLog)
+            elif REGM_uptime_sec.findall(line):
+                uptTMP = REGEXupSec.findall(line)
+                if uptTMP:
+                    upt = REGEXupSecDetail.findall(uptTMP[0])[0]
+                    r_server.hset(dateMac, "uptSec", upt)
+                    r_server.expire(dateMac, expireParsedLog)
 
-			elif REGM_decodeErr.search(line):
-				dErr = REGEXdecodeerr.findall(line)
-				dErrOflow = dErr[0].split()
-				dErrDrops = dErr[1].split()
-				operacrash = dErr[2].split();
-				dErrII = REGEXdecodeerrII.findall(line)
-				dErrErrors = dErrII[0]
-				r_server.hset(dateMac, "operacrash", operacrash[1])
-				r_server.hset(dateMac, "decodeOflow", dErrOflow[1])
-				r_server.hset(dateMac, "ddecodeDrops", dErrDrops[1])
-				r_server.hset(dateMac, "decodeErr", dErrErrors[1:-1])
-				r_server.expire(dateMac, expireParsedLog)
+            elif REGM_playing.search(line):
+                if REGEXplayurl.search(line):
+                    playurl = REGEXplayurl.findall(line)
+                    r_server.hset(dateMac, "url", playurl[0].split('/')[2])
+                elif REGEXip.search(line):
+                    playurl = REGEXip.findall(line)
+                    if (len(playurl) > 1):
+                        r_server.hset(dateMac, "url", playurl[1])
+                    else:
+                        r_server.hset(dateMac, "url", "unknown")
+                else:
+                    playurl = REGEXplayurl.findall(line)
+                    r_server.hset(dateMac, "fw", playurl[0])
 
-			elif REGM_display.search(line):
-				displayErr = REGEXdecodeerr.findall(line)
-				displayUflow = displayErr[0].split();
-				displayDrops = displayErr[1].split();
-				displayErrII = REGEXdecodeerrII.findall(line)
-				displayErrors = displayErrII[0]
-				r_server.hset(dateMac, "displayUflow", displayUflow[1])
-				r_server.hset(dateMac, "displayDrops", displayDrops[1])
-				r_server.hset(dateMac, "displayErr", displayErrors[1:-1])
-				r_server.expire(dateMac, expireParsedLog)
+                r_server.expire(dateMac, expireParsedLog)
 
-			elif REGM_pts.search(line):
-				ptsErr = REGEXdecodeerr.findall(line)
-				ptsError = ptsErr[0].split()
-				Discontinuity = ptsErr[1].split()
-				r_server.hset(dateMac, "ptsError", ptsError[1])
-				r_server.hset(dateMac, "Discontinuity", Discontinuity[1])
-				r_server.expire(dateMac, expireParsedLog)
+            elif REGM_decodeErr.search(line):
+                dErr = REGEXdecodeerr.findall(line)
+                dErrOflow = dErr[0].split()
+                dErrDrops = dErr[1].split()
+                operacrash = dErr[2].split()
+                dErrII = REGEXdecodeerrII.findall(line)
+                dErrErrors = dErrII[0]
+                r_server.hset(dateMac, "operacrash", operacrash[1])
+                r_server.hset(dateMac, "decodeOflow", dErrOflow[1])
+                r_server.hset(dateMac, "ddecodeDrops", dErrDrops[1])
+                r_server.hset(dateMac, "decodeErr", dErrErrors[1:-1])
+                r_server.expire(dateMac, expireParsedLog)
 
-			elif REGM_stalled.search(line):
-				stalledErr = REGEXdecodeerr.findall(line)
-				stalled = stalledErr[0].split()
-				iframeErr = stalledErr[1].split()
-				badStream = stalledErr[2].split()
-				r_server.hset(dateMac, "stalled", stalled[1])
-				r_server.hset(dateMac, "iframeErr", iframeErr[1])
-				r_server.hset(dateMac, "badStream", badStream[1])
-				r_server.expire(dateMac, expireParsedLog)
+            elif REGM_display.search(line):
+                displayErr = REGEXdecodeerr.findall(line)
+                displayUflow = displayErr[0].split()
+                displayDrops = displayErr[1].split()
+                displayErrII = REGEXdecodeerrII.findall(line)
+                displayErrors = displayErrII[0]
+                r_server.hset(dateMac, "displayUflow", displayUflow[1])
+                r_server.hset(dateMac, "displayDrops", displayDrops[1])
+                r_server.hset(dateMac, "displayErr", displayErrors[1:-1])
+                r_server.expire(dateMac, expireParsedLog)
 
-			elif REGM_rtsplog.search(line):
-				r_server.hset(dateMac, "mac", macNoDelimt)
-				if REGEX_rtsp_died.search(line):
-					r_server.hset(dateMac, "rtsperr", "stream died")
-				elif REGEX_rtsp_end.search(line):
-					r_server.hset(dateMac, "rtsperr", "end of stream")
-				elif REGEX_rtsp_fail.search(line):
-					r_server.hset(dateMac, "rtsperr", "Connection Failed")
-				elif REGEX_rtsp_command.search(line):
-					r_server.hset(dateMac, "rtsperr", "command cannot be sent")
-				elif REGEX_rtsp_response.search(line):
-					r_server.hset(dateMac, "rtsperr", "RTSP command could not read")
-				elif REGEX_rtsp_asset.search(line):
-					r_server.hset(dateMac, "rtsperr", "asset not found")
-				elif REGEX_rtsp_video.search(line):
-					r_server.hset(dateMac, "rtsperr", "does not exist")
-				elif REGEX_rtsp_server_stop.search(line):
-					r_server.hset(dateMac, "rtsperr", "server stopped the connection")
-				elif REGEX_rtsp_server_auth.search(line):
-					r_server.hset(dateMac, "rtsperr", "server authentication err")
-				elif REGEX_rtsp_further.search(line):
-					r_server.hset(dateMac, "rtsperr", "Further action")
+            elif REGM_pts.search(line):
+                ptsErr = REGEXdecodeerr.findall(line)
+                ptsError = ptsErr[0].split()
+                Discontinuity = ptsErr[1].split()
+                r_server.hset(dateMac, "ptsError", ptsError[1])
+                r_server.hset(dateMac, "Discontinuity", Discontinuity[1])
+                r_server.expire(dateMac, expireParsedLog)
 
-				r_server.expire(dateMac, expireParsedLog)
+            elif REGM_stalled.search(line):
+                stalledErr = REGEXdecodeerr.findall(line)
+                stalled = stalledErr[0].split()
+                iframeErr = stalledErr[1].split()
+                badStream = stalledErr[2].split()
+                r_server.hset(dateMac, "stalled", stalled[1])
+                r_server.hset(dateMac, "iframeErr", iframeErr[1])
+                r_server.hset(dateMac, "badStream", badStream[1])
+                r_server.expire(dateMac, expireParsedLog)
 
-			elif REGM_mcast.search(line):
-				r_server.hset(dateMac, "mcast", 1)
-				r_server.hset(dateMac, "mac", macNoDelimt)
-				r_server.expire(dateMac, expireParsedLog)
+            elif REGM_rtsplog.search(line):
+                r_server.hset(dateMac, "mac", macNoDelimt)
+                if REGEX_rtsp_died.search(line):
+                    r_server.hset(dateMac, "rtsperr", "stream died")
+                elif REGEX_rtsp_end.search(line):
+                    r_server.hset(dateMac, "rtsperr", "end of stream")
+                elif REGEX_rtsp_fail.search(line):
+                    r_server.hset(dateMac, "rtsperr", "Connection Failed")
+                elif REGEX_rtsp_command.search(line):
+                    r_server.hset(dateMac, "rtsperr", "command cannot be sent")
+                elif REGEX_rtsp_response.search(line):
+                    r_server.hset(dateMac, "rtsperr", "RTSP command could not read")
+                elif REGEX_rtsp_asset.search(line):
+                    r_server.hset(dateMac, "rtsperr", "asset not found")
+                elif REGEX_rtsp_video.search(line):
+                    r_server.hset(dateMac, "rtsperr", "does not exist")
+                elif REGEX_rtsp_server_stop.search(line):
+                    r_server.hset(dateMac, "rtsperr", "server stopped the connection")
+                elif REGEX_rtsp_server_auth.search(line):
+                    r_server.hset(dateMac, "rtsperr", "server authentication err")
+                elif REGEX_rtsp_further.search(line):
+                    r_server.hset(dateMac, "rtsperr", "Further action")
 
-			elif REGM_invalid.search(line):
-				r_server.hset(dateMac, "invaliddata", 1)
-				r_server.hset(dateMac, "mac", macNoDelimt)
-				r_server.expire(dateMac, expireParsedLog)
+                r_server.expire(dateMac, expireParsedLog)
 
-			#else:
-				#print line
-				#r_server.zadd('badlines', line, datetimeUnix)
-				#r_server.expire('badlines', 1800)
-		else:
-			print line
+            elif REGM_mcast.search(line):
+                r_server.hset(dateMac, "mcast", 1)
+                r_server.hset(dateMac, "mac", macNoDelimt)
+                r_server.expire(dateMac, expireParsedLog)
+
+            elif REGM_invalid.search(line):
+                r_server.hset(dateMac, "invaliddata", 1)
+                r_server.hset(dateMac, "mac", macNoDelimt)
+                r_server.expire(dateMac, expireParsedLog)
+
+            #else:
+                #print line
+                #r_server.zadd('badlines', line, datetimeUnix)
+                #r_server.expire('badlines', 1800)
+        else:
+            print line
 
 
 #if match
@@ -217,12 +219,12 @@ REGEX_rtsp_further = re.compile(r"Further")
 
 ##read redis:
 if __name__ == "__main__":
-	for line in queue.consume():
-		lineClean = line.split('@')[1]
-		lineNo = line.split('@')[0]
-		try:
-			matchmyregex(lineClean)
-		except:
-			print lineClean
-			print traceback.format_exc()
-			pass
+    for line in queue.consume():
+        lineClean = line.split('@')[1]
+        lineNo = line.split('@')[0]
+        try:
+            matchmyregex(lineClean)
+        except:
+            print lineClean
+            print traceback.format_exc()
+            pass
