@@ -136,28 +136,8 @@ def matchmyregex(line):
                 r_server.expire(dateMac, expireParsedLog)
 
             elif REGM_rtsplog.search(line):
-                r_server.hset(dateMac, "mac", macNoDelimt)
-                if REGEX_rtsp_died.search(line):
-                    r_server.hset(dateMac, "rtsperr", "stream died")
-                elif REGEX_rtsp_end.search(line):
-                    r_server.hset(dateMac, "rtsperr", "end of stream")
-                elif REGEX_rtsp_fail.search(line):
-                    r_server.hset(dateMac, "rtsperr", "Connection Failed")
-                elif REGEX_rtsp_command.search(line):
-                    r_server.hset(dateMac, "rtsperr", "command cannot be sent")
-                elif REGEX_rtsp_response.search(line):
-                    r_server.hset(dateMac, "rtsperr", "RTSP command could not read")
-                elif REGEX_rtsp_asset.search(line):
-                    r_server.hset(dateMac, "rtsperr", "asset not found")
-                elif REGEX_rtsp_video.search(line):
-                    r_server.hset(dateMac, "rtsperr", "does not exist")
-                elif REGEX_rtsp_server_stop.search(line):
-                    r_server.hset(dateMac, "rtsperr", "server stopped the connection")
-                elif REGEX_rtsp_server_auth.search(line):
-                    r_server.hset(dateMac, "rtsperr", "server authentication err")
-                elif REGEX_rtsp_further.search(line):
-                    r_server.hset(dateMac, "rtsperr", "Further action")
-
+                rtspErrLog = line.split("{")[1].split("}")[0]
+                r_server.hset(dateMac, "rtsperr", rtspErrLog)
                 r_server.expire(dateMac, expireParsedLog)
 
             elif REGM_mcast.search(line):
@@ -206,16 +186,6 @@ REGEXplayurl = re.compile(r"([\a-z]{3,4}://[A-Za-z0-9_\.-]+)")
 REGEXdecodeerr = re.compile(r":\s\d+")
 REGEXdecodeerrII = re.compile(r":\d+,")
 REGEX_serial = re.compile(r"Serial")
-REGEX_rtsp_end = re.compile(r"end of stream")
-REGEX_rtsp_died = re.compile(r"connection died")
-REGEX_rtsp_fail = re.compile(r"Connection Failed")
-REGEX_rtsp_command = re.compile(r"command cannot")
-REGEX_rtsp_response = re.compile(r"Response to RTSP")
-REGEX_rtsp_asset = re.compile(r"Asset was")
-REGEX_rtsp_video = re.compile(r"does not exist")
-REGEX_rtsp_server_stop = re.compile(r"server stopped the connection")
-REGEX_rtsp_server_auth = re.compile(r"authentication")
-REGEX_rtsp_further = re.compile(r"Further")
 
 ##read redis:
 if __name__ == "__main__":
