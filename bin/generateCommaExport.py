@@ -1,15 +1,18 @@
 #!/usr/bin/python
 #
+# cron : */5 * * * * /home/beeadmin/beewatch/bin/generateCommaExport.py > /tmp/commaExport.txt
+#
 
 import time
 import datetime
 from datetime import datetime
 import redis
+import shutil
 
 r_server = redis.Redis(host='localhost', port=6380, db=0)
 
 
-def countKeys(searchString):
+def printKeys(searchString):
     setTopBox = r_server.smembers('who' + searchString)
 
     for key in setTopBox:
@@ -35,10 +38,13 @@ def countKeys(searchString):
 
         print str(isoTime) + ',' + str(ip) + ',' + str(fw) + ',' + str(mac) + ',' + str(uptime) + ',' + str(url) + ',' + str(mcast) + ',' + str(operacrash) + ',' + str(decodeErr) + ',' + str(rtsperr)
 
+    dstFile = '/mnt/nfs/dump/' + str(isoTime) + '.txt'
+    srcFile = '/tmp/commaExport.txt'
+    shutil.copy(srcFile, dstFile)
 
 #initiate stats, find 5 min timeframe to work with
 if __name__ == "__main__":
     timeNow = time.time()
     datetimeUnix = str((int(timeNow)+120)/300*300)  # round to strict 5 min interval
     searchString = str(int(datetimeUnix) - 300)  # search the previous 5 min interval
-    countKeys(searchString)
+    printKeys(searchString)
