@@ -24,7 +24,7 @@ def countKeys(searchString):
         decodeErr = r_server.hget(searchString + key, "decodeErr")
         rtsperr = r_server.hget(searchString + key, "rtsperr")
 
-        if rtsperr == "end of stream":
+        if rtsperr == "RTSP server send a end of stream event":
             rtsperr = "None"
 
         if not mcast:
