@@ -42,13 +42,13 @@ def matchmyregex(line):
 
             ip = line.split(' ')[1]
             r_server.hset(dateMac, "ip", ip)
+            ipAton = reduce(lambda x, y: (x << 8) + y, [int(x) for x in ip.split('.')])
+            r_server.set(ipAton, macNoDelimt)
+            r_server.expire(ipAton, expireIPtoMAC)
 
             if REGM_ipaddress.search(line):
                 firmware = REGEXip.findall(line)
                 if len(firmware) > 2:
-                    ipAton = reduce(lambda x, y: (x << 8) + y, [int(x) for x in firmware[2].split('.')])
-                    r_server.set(ipAton, macNoDelimt)
-                    r_server.expire(ipAton, expireIPtoMAC)
                     r_server.hset(dateMac, "fw", firmware[1])
                     r_server.hset(dateMac, "mac", macNoDelimt)
                 else:
