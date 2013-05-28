@@ -42,7 +42,9 @@ def printKeys(searchString):
 
         print str(isoTime) + ',' + str(ip) + ',' + str(fw) + ',' + str(mac) + ',' + str(uptime) + ',' + str(url) + ',' + str(mcast) + ',' + str(operacrash) + ',' + str(decodeErr) + ',' + str(rtsperr)
 
-    dstFile = '/mnt/nfs/dump/' + str(isoTime) + '.txt'
+    dstFileTMP = '/mnt/nfs/dump/' + str(isoTime) + '.txt'
+    dstFileTMP = dstFileTMP.split(":")
+    dstFile = dstFileTMP[0] + dstFileTMP[1] + dstFileTMP[2]
     srcFile = '/tmp/commaExport.txt'
     shutil.copy(srcFile, dstFile)
 
