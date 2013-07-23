@@ -60,7 +60,7 @@
 			}
 		?>
 
-		<button id="extraLog" onclick="extraLog(ip, mac)">extra log</button><br /><br />
+		<br /><br />
 		<script>
 			if (mac) {
 				calcDisplay('days',days,mac,daysago);
