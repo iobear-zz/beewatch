@@ -119,11 +119,11 @@
 			<h3>Colors?</h3>
 		</div>
 		<div class="modal-body">
-			<div class="stPopup bwError"></div><div class="bwPopupText"> Visible error </div>
+			<div class="stPopup bwError"></div><div class="bwPopupText"> Major error </div>
 			<div class="stPopup bwWarn"></div><div class="bwPopupText"> Small glitch</div>
-			<div class="stPopup bwInfo"></div><div class="bwPopupText"> Reboot</div>
+			<div class="stPopup bwInfo"></div><div class="bwPopupText"> Info, use mouseover</div>
 			<div class="stPopup bwNoError"></div><div class="bwPopupText"> No error found</div>
-			<div class="stPopup bwDisplayError"></div><div class="bwPopupText"> Display error</div>
+			<div class="stPopup bwDisplayError"></div><div class="bwPopupText"> Display error (Typical HDMI error, or TV on standby)</div>
 			<div class="stPopup bwNoInfo"></div><div class="bwPopupText"> In full screen menu - Media player disabled</div>
 			<div class="stPopup bwOffline"></div><div class="bwPopupText"> Offline</div>
 		</div>
