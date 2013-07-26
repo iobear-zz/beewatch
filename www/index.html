@@ -33,7 +33,7 @@
 
 			    <div class="row show-grid" style="background:#eee"><br/>
 			    	<div class="span5">
-					<form class="form-inline" action="index2.php" method="get">
+					<form class="form-inline" action="index2.html" method="get">
 						<div class="input-prepend">
 							<span class="add-on">MAC:</span>
 							<input type="text" class="input-default" placeholder="001CA8A7BDB1" name="mac" />
@@ -55,7 +55,7 @@
 				<br/>	
 				<div class="row show-grid" style="background:#eee"><br/>
 					<div class="span5">
-						<form class="form-horizontal" name="input" action="index2.php" method="get">
+						<form class="form-horizontal" name="input" action="index2.html" method="get">
 							Compare STB's:<br/>
 							<textarea cols="40" rows="5" name="macs"></textarea>
 						<br/>
@@ -101,7 +101,7 @@
 							var boXes=getCookie();
 							for (var k in boXes) {
 								var boxAlias = unescape(boXes[k]);
-								var boxLink = ' <a href="index2.php?mac=' + k + '&days=5">' + k + '</a> ' + boxAlias;
+								var boxLink = ' <a href="index2.html?mac=' + k + '&days=5">' + k + '</a> ' + boxAlias;
 								document.write('<div id="' + k + '">');
 								document.write('<a href="javascript:void(0)" onclick="deleteCookie(\''+k+'\');"><i class="icon-trash"></i></a>' + boxLink + '<br /></div>');
 							}

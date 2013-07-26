@@ -61,7 +61,7 @@ function goToBars(task) {
 		var ipEnd = ip2long(ipEnd);
 		macs = resolveIP(ipStart, ipEnd);
 		if (macs) {
-			var gotoUrl = '/index2.php?daysago=0&macs=' + macs;
+			var gotoUrl = '/index2.html?daysago=0&macs=' + macs;
 			window.location.href = gotoUrl;
 			return false;
 		} else {
@@ -71,7 +71,7 @@ function goToBars(task) {
 		var ipadr = $('#ipadr').val();
 		mac = resolveIP(ip2long(ipadr));
 		if (mac) {
-			window.location.href = 'index2.php?mac=' + mac + '&days=5';
+			window.location.href = 'index2.html?mac=' + mac + '&days=5';
 		} else {
 			$('.ipHTML').html('<span class="label label-warning">mac: not found</span>');
 		}

@@ -7,7 +7,8 @@ $(document).ready(function() {
 function hideButtons() {
 	if (urlMac != 'mac') {
 		urlMac = '';
-		$('button#extraLog').hide();
+		$('button#bookmarkBTN').hide();
+		$('button#tailBTN').hide();
 	}
 }
 
