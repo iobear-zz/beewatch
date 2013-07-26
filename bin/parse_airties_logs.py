@@ -86,7 +86,11 @@ def matchmyregex(line):
                     if (len(playurl) > 1):
                         r_server.hset(dateMac, "url", playurl[1])
                     else:
-                        r_server.hset(dateMac, "url", "unknown")
+                        playurl = line.split("/")[4]
+                        if playurl == "hdd":
+                            r_server.hset(dateMac, "url", "recording")
+                        else:
+                            r_server.hset(dateMac, "url", "unknown")
                 else:
                     playurl = REGEXplayurl.findall(line)
                     r_server.hset(dateMac, "fw", playurl[0])
