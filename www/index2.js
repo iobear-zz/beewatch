@@ -2,6 +2,7 @@ var urlMac = $.jqURL.qs().split('=')[0];
 
 $(document).ready(function() {
 	hideButtons();
+	showBookmarkName();
 });
 
 function hideButtons() {
@@ -9,6 +10,16 @@ function hideButtons() {
 		urlMac = '';
 		$('button#bookmarkBTN').hide();
 		$('button#tailBTN').hide();
+	}
+}
+
+function showBookmarkName() {
+	var boXes=getCookie(); //check if the box has a bookmark
+	for (var k in boXes) {
+		if (k == mac) {
+			$('.bookmarked_name').html(' ' + unescape(boXes[k]));
+			return unescape(boXes[k]);
+		}
 	}
 }
 
