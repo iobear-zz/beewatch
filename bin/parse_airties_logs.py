@@ -16,7 +16,7 @@ lineNo = 0
 
 
 def matchmyregex(line):
-    expireParsedLog = 2764800  # 32 days
+    expireParsedLog = 432000  # 5 days
     expireIPtoMAC = 259200  # 3 days
     expireRAWlogs = 95040  # 1.1 days
 
