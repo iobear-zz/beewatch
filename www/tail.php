@@ -2,35 +2,31 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
 <title>beewatch - tail</title>
-<?php
- $macIN = $_REQUEST['mac'];
- $macIM = ereg_replace("[^A-Fa-f0-9]", "", $macIN );
- $mac=substr($macIM, 0, 12);
- $mac = strtoupper($mac);
- $unixtime = $_REQUEST['unixTime'];
- $logs = $_REQUEST['logs'];
- $next = $unixtime + 300;
- $prev = $unixtime - 300;
- echo "<script type=\"text/javascript\">";
- echo "logs='".$logs."';";
- echo "mac='".$mac."';";
- echo "unixtime='".$unixtime."';";
- echo "</script>";
-?>
+
 <script src="jslib/jquery.min.js"></script>
+<script src="jslib/jqURL.js"></script>
 <script src="settings.js"></script>
+
 <script type="text/javascript">
+	mac = $.jqURL.get('mac');
+	mac = decodeURIComponent(mac).toUpperCase();
+	mac = mac.replace(/[^A-Fa-f0-9]/g, '');
+	unixtime = $.jqURL.get('unixTime');
+	logs = $.jqURL.get('logs');
+	next = parseInt(unixtime) + 300;
+	prev = parseInt(unixtime) - 300;
+
     var lastByte = 0;
 
     if (typeof XMLHttpRequest == "undefined") {
 		// this is only for really ancient browsers
 		XMLHttpRequest = function () {
 			try { return new ActiveXObject("Msxml2.xmlHttp.6.0"); }
-			catch (e1) {}
+				catch (e1) {}
 			try { return new ActiveXObject("Msxml2.xmlHttp.3.0"); }
-			catch (e2) {}
+				catch (e2) {}
 			try { return new ActiveXObject("Msxml2.xmlHttp"); }
-			catch (e3) {}
+				catch (e3) {}
 			throw new Error("This browser does not support xmlHttpRequest.");
 		};
 	}
@@ -85,16 +81,19 @@
 </script>
 </head>
 <body onLoad='tailf(); myTimer = setInterval("tailf()", 5000)'>
-<div>
-<pre id="thePlace"></pre>
-<div id="theEnd"></div>
-<div id="stopButton"><button onclick='stopLog(myTimer)'>Stop</button></div>
-<div id="backNextLink">
-	<?php
-		echo "<a href=\"tail.php?unixTime=".$prev."&mac=".$mac."&logs=1\">Previous</a> ";
-		echo "<a href=\"tail.php?unixTime=".$next."&mac=".$mac."&logs=1\">Next</a>";
-	?>
-</div>
-</div>
+	<div>
+		<pre id="thePlace"></pre>
+		<div id="theEnd"></div>
+		<div id="stopButton"><button onclick='stopLog(myTimer)'>Stop</button></div>
+		<div id="backNextLink">
+			<a id="prev" href="">Previous</a>
+			<a id="next" href="">Next</a>
+
+			<script>
+				$("#prev").attr("href", "tail.php?unixTime=' + prev +'&mac=' + mac + '&logs=1");
+				$("#next").attr("href", "tail.php?unixTime=' + next +'&mac=' + mac + '&logs=1");
+			</script>
+		</div>
+	</div>
 </body>
 </html>
