@@ -1,4 +1,4 @@
-	//Display 24hour status bar, for AirTies
+//Display 24hour status bar, for AirTies
 
 var macIII = 0;
 function genGreyBar(startsec, macII) {
@@ -29,7 +29,11 @@ function calcDisplay(mode, uxdate, macII) {
 		while (startsec < unixtime) {
 			genGreyBar(startsec, macII);
 			var humanDate = new Date(startsec * 1000);
-			document.write('<div class="date">' + humanDate.getDate() + ' ' + monthNames[humanDate.getMonth()] + ' ' + macII + '</div><br />');
+			var macToDisplay = "";
+			if (macs != "") {
+				macToDisplay = macII;
+			}
+			document.write('<div class="date">' + humanDate.getDate() + ' ' + monthNames[humanDate.getMonth()] + ' ' + macToDisplay + '</div><br />');
 			startsec = startsec + 86400;
 		}
 	}
