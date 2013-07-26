@@ -28,7 +28,7 @@
 			mac = decodeURIComponent(mac).toUpperCase();
 			mac = mac.replace(/[^A-Fa-f0-9]/g, '');
 			days = $.jqURL.get('days');
-			var tailLink ='http://' + window.location.hostname + '/tail.php?mac=' + mac;
+			var tailLink ='http://' + window.location.hostname + '/tail.html?mac=' + mac;
 
 			function goToTail() {
 				window.location = tailLink;

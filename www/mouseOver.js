@@ -10,7 +10,7 @@
 	$('div.st').mousedown(function(event) {
 		if (event.which == 1) { //left click
 			var timeMac = $(this).attr('id').split('_', 2);
-			var win = window.location = 'tail.php?unixTime=' + timeMac[0] + '&mac=' + timeMac[1] + '&logs=1';
+			var win = window.location = 'tail.html?unixTime=' + timeMac[0] + '&mac=' + timeMac[1] + '&logs=1';
 			win.focus();
 		}
 	});
