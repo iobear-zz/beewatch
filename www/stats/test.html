@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<title>STB stats BETA</title>
+		<meta http-equiv="Content-Language" content="en" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
+		getRtspErr();
+		getDecodeErr8();
+		google.load("visualization", "1", {packages:["corechart"]});
+		google.setOnLoadCallback(drawChart);
+
+		var decodeErr8 = new Object;
+		var rtspErr = new Object;
+
+
+		function getRtspErr() {
+			$.ajax({
+				url: 'http://beewatch.waoo.org:5124/v1/stats/err/rtspErr/putToArrRtsp',
+				type: "GET",
+				dataType: "jsonp"
+			});
+		}
+
+		function putToArrRtsp(jsondata) {
+			rtspErr = jsondata;
+		}
+
+		function drawChart() {
+			$.ajax({
+				url: 'http://beewatch.waoo.org:5124/v1/stats/err/mcastErr/beestatsMcast',
+				type: "GET",
+				dataType: "jsonp"
+			});
+		}
+
+		function beestatsMcast(jsondata) {
+			var data = new google.visualization.DataTable();
+			var mydata = new Array();
+
+			data.addColumn('string', 'IP range');
+			data.addColumn('number', 'Multicast lost');
+			data.addColumn('number', 'RTSP error');
+
+			$.each(jsondata, function (i, item) {
+				key = 'IP ' + String(i);
+				val = parseFloat(item);
+				val2 = parseFloat(rtspErr[i]);
+				mydata.push([key, val, val2]);
+			});
+
+			data.addRows(mydata);
+			var options = {
+				title: 'Multicast lost & RTSP errors',
+				vAxis: {title: 'IP ranges /16',  titleTextStyle: {color: 'red'}}
+			};
+
+			var chart = new google.visualization.BarChart(document.getElementById('showMcast'));
+			chart.draw(data, options);
+		
+		}
+
+		google.setOnLoadCallback(drawChartDecode);
+
+		function getDecodeErr8() {
+			$.ajax({
+				url: 'http://beewatch.waoo.org:5124/v1/stats/err/decodeErr8/putToArr',
+				type: "GET",
+				dataType: "jsonp"
+			});
+		}
+
+		function putToArr(jsondata) {
+			decodeErr8 = jsondata;
+		}
+
+		function drawChartDecode() {
+			$.ajax({
+				url: 'http://beewatch.waoo.org:5124/v1/stats/err/decodeErr/beestatsdecode',
+				type: "GET",
+				dataType: "jsonp"
+			});
+		}
+
+
+		function beestatsdecode(jsondata) {
+			var data = new google.visualization.DataTable();
+			var mydata = new Array();
+
+			data.addColumn('string', 'IPrange');
+			data.addColumn('number', '% Boxes with decode error');
+			data.addColumn('number', '% Boxes with 7+ decode errors');
+
+			$.each(jsondata, function (i, item) {
+				key = 'IP ' + String(i);
+				val = parseFloat(item)*100;
+				val2 = parseFloat(decodeErr8[i])*100
+				mydata.push([key, val, val2]);
+			});
+
+			data.addRows(mydata);
+			var options = {
+				title: 'Boxes with decode error',
+				vAxis: {title: 'IP ranges /16',  titleTextStyle: {color: 'red'}}
+			};
+
+			var chart = new google.visualization.BarChart(document.getElementById('showDecode'));
+			chart.draw(data, options);
+		
+		}
+		</script>
+	</head>
+<body>
+	<div id="showDecode" style="width: 900px; height: 500px;"></div>
+	<div id="showMcast" style="width: 900px; height: 500px;"></div>
+
+</body>
+</html>
