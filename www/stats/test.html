@@ -6,30 +6,33 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<script type="text/javascript">
-		getRtspErr();
-		getDecodeErr8();
-		google.load("visualization", "1", {packages:["corechart"]});
-		google.setOnLoadCallback(drawChart);
 
 		var decodeErr8 = new Object;
 		var rtspErr = new Object;
+		var serverUrl = 'http://' + window.location.host + ':5124/v1/stats/err/';
 
+		getErrArr('rtspErr');
+		getErrArr('decodeErr8');
+		google.load("visualization", "1", {packages:["corechart"]});
+		google.setOnLoadCallback(drawChart);
 
-		function getRtspErr() {
+		function getErrArr(type) {
+			callback = 'toARR' + type;
+			apiUrl = serverUrl + type + '/' + callback;
 			$.ajax({
-				url: 'http://beewatch.waoo.org:5124/v1/stats/err/rtspErr/putToArrRtsp',
+				url: apiUrl,
 				type: "GET",
 				dataType: "jsonp"
 			});
 		}
 
-		function putToArrRtsp(jsondata) {
+		function toARRrtspErr(jsondata) {
 			rtspErr = jsondata;
 		}
 
 		function drawChart() {
 			$.ajax({
-				url: 'http://beewatch.waoo.org:5124/v1/stats/err/mcastErr/beestatsMcast',
+				url: serverUrl + 'mcastErr/beestatsMcast',
 				type: "GET",
 				dataType: "jsonp"
 			});
@@ -63,21 +66,13 @@
 
 		google.setOnLoadCallback(drawChartDecode);
 
-		function getDecodeErr8() {
-			$.ajax({
-				url: 'http://beewatch.waoo.org:5124/v1/stats/err/decodeErr8/putToArr',
-				type: "GET",
-				dataType: "jsonp"
-			});
-		}
-
-		function putToArr(jsondata) {
+		function toARRdecodeErr8(jsondata) {
 			decodeErr8 = jsondata;
 		}
 
 		function drawChartDecode() {
 			$.ajax({
-				url: 'http://beewatch.waoo.org:5124/v1/stats/err/decodeErr/beestatsdecode',
+				url: serverUrl + 'decodeErr/beestatsdecode',
 				type: "GET",
 				dataType: "jsonp"
 			});
@@ -98,7 +93,6 @@
 				val2 = parseFloat(decodeErr8[i])*100
 				mydata.push([key, val, val2]);
 			});
-
 			data.addRows(mydata);
 			var options = {
 				title: 'Boxes with decode error',
