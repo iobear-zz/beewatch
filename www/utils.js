@@ -44,7 +44,7 @@ function resolveIP(ipstart, ipend) {
 	}
 	$.ajax({ type: 'GET',
 		url: ipUrl,
-	    dataType: 'html',
+		dataType: 'html',
 		async: false,
 		success: function(text) {
 			retur = text;

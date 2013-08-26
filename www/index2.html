@@ -46,13 +46,11 @@
 			</div>
 		</div>
 
-		<a data-toggle="modal" href="#color-popup" class="btn">
-				<div class="st bwError"></div> <div class="st bwWarn"></div> <div class="st bwInfo"></div> <div class="st bwNoError"></div> <div class="st bwDisplayError"></div> <div class="st bwNoInfo"></div>
-		</a>
+		<a data-toggle="modal" href="#color-popup" class="btn">help</a>
 
-		<button id="bookmarkBTN" onclick="bookmarkBox(mac)">bookmark</button>
-		<button id="tailBTN" onclick="goToTail()">tail</button>
-		<span class="label"><div class="bookmarked_name"></div></span>
+		<button id="bookmarkBTN" onclick="bookmarkBox(mac)" class="btn">bookmark</button>
+		<button id="tailBTN" onclick="goToTail()" class="btn">tail</button>
+		<span class="badge"><div class="bookmarked_name"></div></span>
 
 		<br />
 		<br />
@@ -76,26 +74,26 @@
 			<div class="fw"></div>
 		</div>
 		<div class="kasse">
-			<div class="headline">Misc</div>
+			<div class="headline">Info</div>
 			<div class="ptsError"></div>
 			<div class="Discontinuity"></div>
 			<div class="iframeErr"></div>
 			<div class="ip"></div>
 		</div>
 		<div class="kasse">
-			<div class="headline">Misc</div>
+			<div class="headline">Info</div>
 			<div class="stalled"></div>
 			<div class="badStream"></div>
 			<div class="operaCrash"></div>
 		</div>
 		<div class="kasse">
-			<div class="headline">Decoder</div>
+			<div class="headline">Decoder (network)</div>
 			<div class="ddecodeDrops"></div>
 			<div class="decodeErr"></div>
 			<div class="decodeOflow"></div>
 		</div>
 		<div class="kassesidst">
-			<div class="headline">Display</div>
+			<div class="headline">Display (HDMI)</div>
 			<div class="displayUflow"></div>
 			<div class="displayDrops"></div>
 			<div class="displayErr"></div>
@@ -111,8 +109,8 @@
 			<h3>Colors?</h3>
 		</div>
 		<div class="modal-body">
-			<div class="stPopup bwError"></div><div class="bwPopupText"> Major error </div>
-			<div class="stPopup bwWarn"></div><div class="bwPopupText"> Small glitch</div>
+			<div class="stPopup bwError"></div><div class="bwPopupText"> Major error (picture error)</div>
+			<div class="stPopup bwWarn"></div><div class="bwPopupText"> Small glitch (not always visible error)</div>
 			<div class="stPopup bwInfo"></div><div class="bwPopupText"> Info, use mouseover</div>
 			<div class="stPopup bwNoError"></div><div class="bwPopupText"> No error found</div>
 			<div class="stPopup bwDisplayError"></div><div class="bwPopupText"> Display error (Typical HDMI error, or TV on standby)</div>
