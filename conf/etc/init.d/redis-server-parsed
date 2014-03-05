@@ -13,7 +13,7 @@
 
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/bin/redis-server-parsed
+DAEMON=/usr/bin/redis-server
 DAEMON_ARGS=/etc/redis/redis-parsed.conf
 NAME=redis-server-parsed
 DESC=redis-server-parsed
