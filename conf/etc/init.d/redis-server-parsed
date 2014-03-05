@@ -1,6 +1,6 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:		redis-server
+# Provides:		redis-server-parsed
 # Required-Start:	$syslog $remote_fs
 # Required-Stop:	$syslog $remote_fs
 # Should-Start:		$local_fs
