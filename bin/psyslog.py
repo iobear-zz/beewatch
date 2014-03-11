@@ -21,7 +21,7 @@ class SyslogUDPHandler(SocketServer.BaseRequestHandler):
 
 	def handle(self):
 		global lineNumber
-		data = bytes.decode(self.request[0].strip())
+		data = bytes.decode(self.request[0].strip(), 'utf-8')
 
 		laengde = len(data)
 		if laengde > 4:
@@ -37,6 +37,6 @@ if __name__ == "__main__":
 		server = SocketServer.UDPServer((HOST, PORT), SyslogUDPHandler)
 		server.serve_forever()
 	except (IOError, SystemExit):
-		raise
+		pass
 	except KeyboardInterrupt:
 		print ("Crtl+C Pressed. Shutting down.")
