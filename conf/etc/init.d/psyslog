@@ -1,0 +1,59 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:		psyslog
+# Required-Start:	$syslog $remote_fs
+# Required-Stop:	$syslog $remote_fs
+# Should-Start:		$local_fs
+# Should-Stop:		$local_fs
+# Default-Start:	2 3 4 5
+# Default-Stop:		0 1 6
+# Short-Description:	psyslog - a small Python syslog server
+# Description:		psyslog - a small Python syslog server, feeding redis via HotQueue
+### END INIT INFO
+
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/home/beeadmin/beewatch/bin/psyslog.py
+DAEMON_ARGS=/usr/bin/python
+NAME=psyslog
+DESC=psyslog
+
+RUNDIR=/var/run/psyslog
+PIDFILE=$RUNDIR/psyslog.pid
+
+test -x $DAEMON || exit 0
+
+if [ -r /etc/default/$NAME ]
+then
+	. /etc/default/$NAME
+fi
+
+set -e
+
+case "$1" in
+  start)
+	echo -n "Starting $DESC: "
+	mkdir -p $RUNDIR
+	touch $PIDFILE
+	chmod 755 $RUNDIR
+
+	if [ -n "$ULIMIT" ]
+	then
+		ulimit -n $ULIMIT
+	fi
+
+	if start-stop-daemon --start --quiet --umask 007 --pidfile $PIDFILE --chuid root:root --exec $DAEMON_ARGS -- $DAEMON &
+	then
+		echo "$NAME."
+	else
+		echo "failed"
+	fi
+	;;
+
+  *)
+	echo "Usage: /etc/init.d/$NAME {start}" >&2
+	exit 1
+	;;
+esac
+
+exit 0
